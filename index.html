@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#eaf2e5">
+<title>家庭收支 · 生活管家</title>
+<style>
+:root{--ink:#233128;--muted:#657368;--glass:rgba(255,255,255,.78);--line:rgba(42,72,53,.12);--shadow:0 18px 55px rgba(31,57,40,.14)}
+*{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);min-height:100vh;background:#dfead9}
+body:before{content:"";position:fixed;inset:0;z-index:-2;background:linear-gradient(135deg,#dcebd7,#f8e9cf 48%,#d8e8e6);transition:background 1s}
+body:after{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 18% 14%,rgba(255,255,255,.8),transparent 25%),radial-gradient(circle at 82% 28%,rgba(255,255,255,.42),transparent 24%),linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.28))}
+.app{max-width:720px;margin:auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom))}
+.card{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.6);box-shadow:var(--shadow);border-radius:26px;padding:20px}
+.hero{text-align:center;padding:26px 18px 20px}.title{font-size:27px;font-weight:800;letter-spacing:.06em}.date{margin-top:7px;color:var(--muted);font-size:14px}.quote{margin:18px auto 8px;font-family:Georgia,"Songti SC",serif;font-size:17px;line-height:1.65;max-width:520px}
+.mini-tools{display:flex;justify-content:center;gap:10px;margin:12px 0}.iconbtn{border:0;background:rgba(255,255,255,.72);border-radius:999px;padding:9px 13px;font-size:14px;color:var(--ink);box-shadow:0 5px 15px rgba(30,50,35,.08)}
+textarea{width:100%;min-height:112px;border:1px solid var(--line);border-radius:20px;padding:16px;font-size:17px;line-height:1.55;background:rgba(255,255,255,.84);outline:none;resize:vertical} textarea:focus,input:focus,select:focus{border-color:#779d7d;box-shadow:0 0 0 3px rgba(119,157,125,.14)}
+.hint{font-size:12px;color:var(--muted);margin:7px 5px 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mainbtn{border:0;border-radius:18px;padding:15px 10px;font-size:17px;font-weight:700;background:rgba(255,255,255,.86);color:var(--ink);box-shadow:0 7px 18px rgba(37,62,44,.08)}.mainbtn.primary{background:#416b4c;color:white}.mainbtn:active,.iconbtn:active{transform:scale(.98)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}.stat{background:rgba(255,255,255,.62);padding:13px 7px;border-radius:16px;text-align:center}.stat small{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;margin-top:5px;font-size:15px}
+.tip{margin-top:16px;text-align:left;background:rgba(255,255,255,.54);border-radius:18px;padding:14px 16px;line-height:1.55}.tip b{font-size:13px}.tip div{font-size:13px;color:#46554a;margin-top:5px}
+.bless{text-align:center;font:italic 11px/1.6 Georgia,serif;color:rgba(43,58,47,.55);padding:18px 8px 3px}.version{text-align:center;font-size:9px;color:rgba(43,58,47,.38)}
+.view{display:none}.view.active{display:block}.topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}.topbar h2{margin:0;flex:1;font-size:21px}.back{border:0;background:rgba(255,255,255,.78);border-radius:14px;padding:10px 13px;font-size:15px}
+.quick{display:flex;gap:8px;overflow:auto;padding:2px 0 12px}.chip{white-space:nowrap;border:1px solid var(--line);background:white;border-radius:999px;padding:8px 12px}.dates{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 5px 4px}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:14px;padding:11px;background:white;font-size:15px}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}.summary .stat{background:rgba(255,255,255,.78)}
+.tablewrap{overflow:auto;border-radius:16px;background:rgba(255,255,255,.72)}table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left}th{background:rgba(230,239,229,.8);position:sticky;top:0}.rowpick{cursor:pointer}.rowpick.selected{background:#e2efdf}
+.section{margin-top:14px}.section h3{font-size:16px;margin:0 0 9px}.analysis-box{background:rgba(255,255,255,.7);border-radius:18px;padding:14px;margin:10px 0;line-height:1.65;font-size:14px}.analysis-box ul{margin:7px 0 0;padding-left:20px}
+.actions{display:flex;gap:10px;margin-top:14px}.actions button{flex:1}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:rgba(31,45,35,.92);color:white;padding:11px 16px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.editor{display:none;margin-top:14px}.editor.show{display:block}.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editgrid .wide{grid-column:1/-1}
+@media(max-width:420px){.app{padding-left:12px;padding-right:12px}.card{padding:16px}.title{font-size:24px}.stats{gap:6px}.stat strong{font-size:13px}.dates,.editgrid{grid-template-columns:1fr}.editgrid .wide{grid-column:auto}}
+@media print{body:before,body:after,.mini-tools,.grid,.quick,.actions,.back{display:none!important}.app{max-width:none}.card{box-shadow:none;border:0;background:white}}
+</style>
+</head>
+<body>
+<div class="app">
+<section id="home" class="view active">
+ <div class="card hero">
+  <div class="title">家庭收支 · 生活管家</div>
+  <div id="todayLabel" class="date"></div>
+  <div id="quote" class="quote"></div>
+  <div class="mini-tools"><button class="iconbtn" id="speakBtn">🔊 朗读</button><button class="iconbtn" id="musicBtn">♫ 音乐</button></div>
+  <textarea id="entryText" placeholder="🎙 请说出或输入今天的收支……&#10;例如：买苹果香蕉46元，家里吃"></textarea>
+  <div class="hint">可直接使用 iPhone 键盘上的麦克风进行语音听写</div>
+  <div class="grid">
+   <button class="mainbtn primary" id="addBtn">录入</button><button class="mainbtn" id="queryBtn">查询</button>
+   <button class="mainbtn" id="analysisBtn">分析</button><button class="mainbtn" id="clearBtn">清屏</button>
+  </div>
+  <div class="stats">
+   <div class="stat"><small>今日收入</small><strong id="todayIncome">¥0.00</strong></div>
+   <div class="stat"><small>今日支出</small><strong id="todayExpense">¥0.00</strong></div>
+   <div class="stat"><small>今日结余</small><strong id="todayBalance">¥0.00</strong></div>
+  </div>
+  <div class="tip"><b>☀ 今日生活小常识</b><div id="dailyTip"></div></div>
+  <div class="bless">With my warmest wishes, today and every day, to all my family and friends.</div>
+  <div class="version">家庭收支 · 生活管家 v1.0 · 2026.09.27</div>
+ </div>
+</section>
+
+<section id="query" class="view">
+ <div class="card">
+  <div class="topbar"><button class="back" data-back>‹ 返回</button><h2>收支查询</h2></div>
+  <div class="quick">
+   <button class="chip" data-range="today">今天</button><button class="chip" data-range="week">本周</button><button class="chip" data-range="month">本月</button><button class="chip" data-range="lastMonth">上月</button><button class="chip" data-range="year">今年</button>
+  </div>
+  <div class="dates"><div class="field"><label>开始日期</label><input type="date" id="startDate"></div><div class="field"><label>结束日期</label><input type="date" id="endDate"></div></div>
+  <div class="actions"><button class="mainbtn primary" id="doQuery">查询</button><button class="mainbtn" onclick="window.print()">打印</button></div>
+  <div id="queryResults"></div>
+  <div class="editor" id="editor">
+   <div class="section"><h3>修改选中的记录</h3></div>
+   <div class="editgrid">
+    <div class="field"><label>日期</label><input type="date" id="editDate"></div>
+    <div class="field"><label>性质</label><select id="editType"><option value="expense">支出</option><option value="income">收入</option><option value="investment">理财投资</option></select></div>
+    <div class="field"><label>类别</label><select id="editCategory"></select></div>
+    <div class="field"><label>金额</label><input type="number" step="0.01" min="0" id="editAmount"></div>
+    <div class="field wide"><label>名称</label><input id="editName"></div>
+    <div class="field wide"><label>用途</label><input id="editPurpose"></div>
+   </div>
+   <div class="actions"><button class="mainbtn primary" id="saveEdit">保存修改</button><button class="mainbtn" id="cancelEdit">取消</button></div>
+  </div>
+  <div class="actions"><button class="mainbtn" id="modifyBtn">修改</button><button class="mainbtn" data-back>返回</button></div>
+ </div>
+</section>
+
+<section id="analysis" class="view">
+ <div class="card">
+  <div class="topbar"><button class="back" data-back>‹ 返回</button><h2>财务分析</h2></div>
+  <div class="quick">
+   <button class="chip" data-arange="month">本月</button><button class="chip" data-arange="lastMonth">上月</button><button class="chip" data-arange="year">今年</button><button class="chip" data-arange="all">全部</button>
+  </div>
+  <div id="analysisContent"></div>
+  <div class="actions"><button class="mainbtn" data-back>返回</button></div>
+ </div>
+</section>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+const KEY='familyFinanceGift_v1';
+const categories=['蔬菜水果','生鲜肉食','餐饮','生活用品','住房缴费','交通车辆','家装维修','医疗健康','教育学习','休闲娱乐','人情其他','工资收入','其他收入','理财投资','其他'];
+const rules=[
+ ['蔬菜水果',/蔬菜|青菜|白菜|菠菜|西红柿|番茄|黄瓜|土豆|水果|苹果|香蕉|橙|梨|桃|葡萄|西瓜|草莓|粮油|大米|面粉|食用油/],
+ ['生鲜肉食',/猪肉|牛肉|羊肉|鸡肉|鸭肉|肉|鱼|虾|蟹|海鲜|鸡蛋|蛋|牛奶|奶|生鲜/],
+ ['餐饮',/早餐|午餐|晚餐|外卖|饭店|餐厅|吃饭|咖啡|奶茶|小吃/],
+ ['生活用品',/纸巾|洗衣|洗发|牙膏|日用品|生活用品|清洁|超市用品/],
+ ['住房缴费',/物业|暖气|水费|电费|燃气|煤气|停车费|房租|物业费/],
+ ['交通车辆',/加油|汽油|充电费|打车|出租车|地铁|公交|车险|保养|修车|洗车|车辆/],
+ ['家装维修',/装修|家具|家电|维修|五金|灯具|家装/],
+ ['医疗健康',/医院|看病|挂号|药|体检|医疗|牙医|眼镜/],
+ ['教育学习',/学费|书|课程|培训|学习|考试|文具/],
+ ['休闲娱乐',/电影|旅游|旅行|景点|娱乐|游戏|健身|演出/],
+ ['人情其他',/礼金|红包|礼物|请客|人情|捐款/]
+];
+const quotes=['认真生活，也认真记录生活。','把日子过成喜欢的样子，从珍惜每一份拥有开始。','生活的丰盛，不只在数字里，也在每一次用心安排中。','愿今天的每一笔记录，都成为明天从容生活的一点底气。','平常心看收支，用心过好每一天。','把钱花在值得的地方，把时间留给重要的人。'];
+const tips=['按实际需要采购蔬果，可以减少食物浪费，也让家庭支出更清晰。','固定缴费与日常消费分开记录，更容易看清真正可以调整的支出。','理财资金和生活消费分开统计，可以避免把资产转换误认为普通花销。','小额支出如果持续记录，一个月后往往比凭感觉估算更准确。','家庭预算不必追求每笔都省，重点是让必要支出、生活品质和长期储备保持平衡。','定期回顾重复性支出，比只关注偶尔的一笔大额消费更有参考价值。'];
+function localDate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
+function money(n){return '¥'+Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2600)}
+function loadEntries(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}}
+function saveEntries(entries){localStorage.setItem(KEY,JSON.stringify(entries))}
+function classify(text,type){
+ if(type==='income') return /工资|薪资|奖金/.test(text)?'工资收入':'其他收入';
+ if(type==='investment') return '理财投资';
+ for(const [c,re] of rules) if(re.test(text)) return c;
+ return '其他';
+}
+function parseEntry(text){
+ const raw=(text||'').trim(); if(!raw)return {error:'请输入一笔收支内容'};
+ const matches=[...raw.matchAll(/(?:¥|￥)?\s*(\d+(?:\.\d{1,2})?)\s*(?:元|块|块钱|人民币)?/g)];
+ const candidates=matches.filter(m=>{const n=Number(m[1]);return n>0 && !(n>=1900&&n<=2100)});
+ if(!candidates.length)return {error:'没有识别到有效金额，请例如输入“买苹果46元”'};
+ const preferred=candidates.filter(m=>/元|块|块钱|人民币/.test(m[0]));
+ const pick=(preferred.length?preferred:candidates).at(-1), amount=Number(pick[1]);
+ const isInvestment=/基金|股票|黄金|理财|定投|存款|投资|债券/.test(raw)&&!/收益|分红|赎回到账/.test(raw);
+ const isIncome=/收入|工资|薪资|奖金|到账|退款|补贴|报销|收款|分红|收益/.test(raw)&&!isInvestment;
+ const type=isInvestment?'investment':isIncome?'income':'expense';
+ const category=classify(raw,type);
+ let name=raw.replace(pick[0],'').replace(/今天|今日|昨天|支出|收入|花了|花费|支付|购买|买了|买|交了|交付|交|到账|收到/g,'').replace(/[，,。；;]/g,' ').trim();
+ if(!name) name=category;
+ const purpose=(raw.match(/(?:用于|用途|给|家里|为了)([^，,。；;]+)/)||[])[0]||'';
+ return {id:Date.now()+Math.random().toString(16).slice(2),date:localDate(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),type,category,name:name.slice(0,60),amount,purpose,raw,createdAt:new Date().toISOString()};
+}
+function addEntry(){
+ const box=document.getElementById('entryText'),r=parseEntry(box.value);
+ if(r.error){toast(r.error);return}
+ const a=loadEntries();a.push(r);saveEntries(a);box.value='';updateToday();toast(`✓ 已录入：${r.category}｜${r.name}｜${r.amount.toFixed(2)}元`);
+}
+function filterEntries(entries,start,end){return entries.filter(e=>e.date>=start&&e.date<=end)}
+function summarizeEntries(entries){
+ let income=0,expense=0,investment=0;const by={};
+ entries.forEach(e=>{if(e.type==='income')income+=+e.amount;else if(e.type==='investment')investment+=+e.amount;else expense+=+e.amount;(by[e.category]??={count:0,amount:0}).count++;by[e.category].amount+=+e.amount});
+ return {income,expense,investment,balance:income-expense-investment,by};
+}
+function updateToday(){const s=summarizeEntries(filterEntries(loadEntries(),localDate(),localDate()));todayIncome.textContent=money(s.income);todayExpense.textContent=money(s.expense);todayBalance.textContent=money(s.income-s.expense-s.investment)}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+function getRange(kind){
+ const now=new Date(), y=now.getFullYear(),m=now.getMonth();let s,e;
+ if(kind==='today')s=e=new Date(y,m,now.getDate());
+ else if(kind==='week'){const day=(now.getDay()+6)%7;s=new Date(y,m,now.getDate()-day);e=new Date(y,m,now.getDate()-day+6)}
+ else if(kind==='month'){s=new Date(y,m,1);e=new Date(y,m+1,0)}
+ else if(kind==='lastMonth'){s=new Date(y,m-1,1);e=new Date(y,m,0)}
+ else if(kind==='year'){s=new Date(y,0,1);e=new Date(y,11,31)}
+ else return null;
+ return [localDate(s),localDate(e)];
+}
+function setRange(kind){const r=getRange(kind);if(r){startDate.value=r[0];endDate.value=r[1]}}
+let selectedId=null;
+function renderQuery(){
+ const start=startDate.value,end=endDate.value;if(!start||!end||start>end){toast('请选择正确的日期区间');return}
+ const list=filterEntries(loadEntries(),start,end).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)),s=summarizeEntries(list);
+ const denom=s.expense+s.investment||1;
+ const cats=Object.entries(s.by).sort((a,b)=>b[1].amount-a[1].amount).map(([c,v])=>`<tr><td>${c}</td><td>${v.count}</td><td>${money(v.amount)}</td><td>${(v.amount/denom*100).toFixed(1)}%</td></tr>`).join('');
+ const rows=list.map(e=>`<tr class="rowpick ${e.id===selectedId?'selected':''}" data-id="${e.id}"><td>${e.date}<br><small>${e.time||''}</small></td><td>${e.category}</td><td>${esc(e.name)}</td><td>${money(e.amount)}</td><td>${esc(e.purpose||'')}</td></tr>`).join('');
+ queryResults.innerHTML=`<div class="summary"><div class="stat"><small>总收入</small><strong>${money(s.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(s.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(s.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(s.balance)}</strong></div></div>
+ <div class="section"><h3>分类汇总</h3><div class="tablewrap"><table><thead><tr><th>类别</th><th>笔数</th><th>金额</th><th>占比</th></tr></thead><tbody>${cats||'<tr><td colspan="4">暂无记录</td></tr>'}</tbody></table></div></div>
+ <div class="section"><h3>收支明细</h3><div class="tablewrap"><table><thead><tr><th>时间</th><th>类别</th><th>名称</th><th>价钱</th><th>用途</th></tr></thead><tbody>${rows||'<tr><td colspan="5">暂无记录</td></tr>'}</tbody></table></div></div>`;
+ document.querySelectorAll('.rowpick').forEach(r=>r.onclick=()=>{selectedId=r.dataset.id;renderQuery()});
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function openEditor(){
+ if(!selectedId){toast('请先点选一条明细');return}
+ const e=loadEntries().find(x=>x.id===selectedId);if(!e)return;
+ editDate.value=e.date;editType.value=e.type;editCategory.value=e.category;editAmount.value=e.amount;editName.value=e.name;editPurpose.value=e.purpose||'';editor.classList.add('show');editor.scrollIntoView({behavior:'smooth'});
+}
+function saveEditRecord(){
+ const amount=Number(editAmount.value);if(!editDate.value||!editName.value.trim()||!(amount>0)){toast('日期、名称和金额不能为空');return}
+ const a=loadEntries(),i=a.findIndex(x=>x.id===selectedId);if(i<0)return;
+ a[i]={...a[i],date:editDate.value,type:editType.value,category:editCategory.value,amount,name:editName.value.trim(),purpose:editPurpose.value.trim()};saveEntries(a);editor.classList.remove('show');updateToday();renderQuery();toast('修改已保存');
+}
+function buildAnalysis(entries,rangeLabel='所选期间'){
+ const s=summarizeEntries(entries), spending=s.expense||1;
+ const top=Object.entries(s.by).filter(([c])=>!['工资收入','其他收入','理财投资'].includes(c)).sort((a,b)=>b[1].amount-a[1].amount).slice(0,3);
+ const fixed=entries.filter(e=>e.type==='expense'&&['住房缴费'].includes(e.category)).reduce((n,e)=>n+ +e.amount,0);
+ const saveRate=s.income>0?(s.income-s.expense-s.investment)/s.income*100:null;
+ const facts=[`${rangeLabel}共记录 ${entries.length} 笔。收入 ${money(s.income)}，生活支出 ${money(s.expense)}，理财投资 ${money(s.investment)}，现金结余 ${money(s.balance)}。`,`固定类住房缴费 ${money(fixed)}。`];
+ if(top.length)facts.push(`生活支出较多的类别：${top.map(([c,v])=>`${c} ${money(v.amount)}（${(v.amount/spending*100).toFixed(1)}%）`).join('、')}。`);
+ const inference=[];
+ if(!entries.length)inference.push('当前期间还没有足够记录，建议先持续录入一段时间再观察趋势。');
+ else{
+  if(s.income===0)inference.push('当前期间未记录收入，因此不能据此判断家庭真实收支平衡；如有固定收入，可补充录入后再分析。');
+  if(s.balance<0)inference.push('记录口径下现金流出高于收入。若其中包含一次性投资或大额必要支出，应结合实际情况解释，不宜仅凭这一结果判断消费是否合理。');
+  else if(s.income>0)inference.push(`记录口径下仍有正向现金结余${saveRate!==null?`，约占收入的 ${saveRate.toFixed(1)}%`:''}。`);
+ }
+ const advice=['把住房缴费等固定支出与日常可变支出继续分开观察，优先管理重复出现、可调整的项目。','理财投资建议继续与生活消费分开记录；投资金额代表资金配置，不等同于消费损失。','可根据家庭实际需要预留应急资金；涉及基金、股票、黄金等具体投资时，应结合期限、风险承受能力和资金用途独立判断。'];
+ return {s,facts,inference,advice};
+}
+function renderAnalysis(kind='month'){
+ let entries=loadEntries(),label='全部记录';
+ if(kind!=='all'){const r=getRange(kind);entries=filterEntries(entries,r[0],r[1]);label=kind==='month'?'本月':kind==='lastMonth'?'上月':'今年'}
+ const a=buildAnalysis(entries,label);
+ analysisContent.innerHTML=`<div class="summary"><div class="stat"><small>收入</small><strong>${money(a.s.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(a.s.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(a.s.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(a.s.balance)}</strong></div></div>
+ <div class="analysis-box"><b>一、数据事实</b><ul>${a.facts.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+ <div class="analysis-box"><b>二、程序分析</b><ul>${a.inference.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+ <div class="analysis-box"><b>三、家庭财务建议</b><ul>${a.advice.map(x=>`<li>${x}</li>`).join('')}</ul><div style="margin-top:8px;color:#68756b;font-size:12px">以上为一般性财务管理参考，不构成具体投资产品建议。</div></div>`;
+}
+let audioCtx=null,osc=null,gain=null;
+function toggleMusic(){
+ if(osc){try{osc.stop()}catch(e){}osc=null;musicBtn.textContent='♫ 音乐';return}
+ const AC=window.AudioContext||window.webkitAudioContext;if(!AC){toast('当前浏览器不支持网页音乐');return}
+ audioCtx=audioCtx||new AC();gain=audioCtx.createGain();gain.gain.value=.018;osc=audioCtx.createOscillator();osc.type='sine';osc.frequency.value=174;osc.connect(gain);gain.connect(audioCtx.destination);osc.start();musicBtn.textContent='❚❚ 音乐';
+}
+function speakHome(){if(!('speechSynthesis'in window)){toast('当前浏览器不支持朗读');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`${todayLabel.textContent}。${quote.textContent}。今日生活小常识：${dailyTip.textContent}`);u.lang='zh-CN';u.rate=.9;speechSynthesis.speak(u)}
+function init(){
+ const now=new Date(),week='日一二三四五六'[now.getDay()];todayLabel.textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日  星期${week}`;
+ const seed=(now.getFullYear()*400+now.getMonth()*32+now.getDate());quote.textContent='“'+quotes[seed%quotes.length]+'”';dailyTip.textContent=tips[(seed+2)%tips.length];
+ const bgs=[['#dcebd7','#f8e9cf','#d8e8e6'],['#e8e3d4','#dce9df','#f5e2d8'],['#d9e8e6','#f3ead9','#e4dfec']][seed%3];document.body.style.background=`linear-gradient(135deg,${bgs[0]},${bgs[1]} 50%,${bgs[2]})`;
+ editCategory.innerHTML=categories.map(c=>`<option>${c}</option>`).join('');setRange('month');updateToday();
+}
+addBtn.onclick=addEntry;clearBtn.onclick=()=>{entryText.value='';entryText.focus()};queryBtn.onclick=()=>{showView('query');renderQuery()};analysisBtn.onclick=()=>{showView('analysis');renderAnalysis('month')};doQuery.onclick=renderQuery;modifyBtn.onclick=openEditor;saveEdit.onclick=saveEditRecord;cancelEdit.onclick=()=>editor.classList.remove('show');speakBtn.onclick=speakHome;musicBtn.onclick=toggleMusic;
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showView('home'));document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{setRange(b.dataset.range);renderQuery()});document.querySelectorAll('[data-arange]').forEach(b=>b.onclick=()=>renderAnalysis(b.dataset.arange));
+init();
+</script>
+</body>
+</html>
