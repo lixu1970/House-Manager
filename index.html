@@ -11,24 +11,24 @@
 *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);min-height:100vh;background:#dfead9}
 body:before{content:"";position:fixed;inset:0;z-index:-2;background:linear-gradient(135deg,#dcebd7,#f8e9cf 48%,#d8e8e6);transition:background 1s}
 body:after{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 18% 14%,rgba(255,255,255,.8),transparent 25%),radial-gradient(circle at 82% 28%,rgba(255,255,255,.42),transparent 24%),linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.28))}
-.app{max-width:720px;margin:auto;min-height:100vh;padding:calc(18px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom))}
+.app{max-width:720px;margin:auto;min-height:100vh;padding:calc(8px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom))}
 .card{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.6);box-shadow:var(--shadow);border-radius:26px;padding:20px}
-.hero{text-align:center;padding:26px 18px 20px}.title{font-size:27px;font-weight:800;letter-spacing:.06em}.date{margin-top:7px;color:var(--muted);font-size:14px}.quote{margin:18px auto 8px;font-family:Georgia,"Songti SC",serif;font-size:17px;line-height:1.65;max-width:520px}
+.hero{text-align:center;padding:14px 14px 10px}.title{font-size:24px;font-weight:800;letter-spacing:.06em}.date{margin-top:7px;color:var(--muted);font-size:14px}.quote{margin:8px auto 5px;font-family:Georgia,"Songti SC",serif;font-size:17px;line-height:1.65;max-width:520px}
 .mini-tools{display:flex;justify-content:center;gap:10px;margin:12px 0}.iconbtn{border:0;background:rgba(255,255,255,.72);border-radius:999px;padding:9px 13px;font-size:14px;color:var(--ink);box-shadow:0 5px 15px rgba(30,50,35,.08)}
-textarea{width:100%;min-height:112px;border:1px solid var(--line);border-radius:20px;padding:16px;font-size:17px;line-height:1.55;background:rgba(255,255,255,.84);outline:none;resize:vertical} textarea:focus,input:focus,select:focus{border-color:#779d7d;box-shadow:0 0 0 3px rgba(119,157,125,.14)}
-.hint{font-size:12px;color:var(--muted);margin:7px 5px 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mainbtn{border:0;border-radius:18px;padding:15px 10px;font-size:17px;font-weight:700;background:rgba(255,255,255,.86);color:var(--ink);box-shadow:0 7px 18px rgba(37,62,44,.08)}.mainbtn.primary{background:#416b4c;color:white}.mainbtn:active,.iconbtn:active{transform:scale(.98)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}.stat{background:rgba(255,255,255,.62);padding:13px 7px;border-radius:16px;text-align:center}.stat small{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;margin-top:5px;font-size:15px}
-.tip{margin-top:16px;text-align:left;background:rgba(255,255,255,.54);border-radius:18px;padding:14px 16px;line-height:1.55}.tip b{font-size:13px}.tip div{font-size:13px;color:#46554a;margin-top:5px}
-.bless{text-align:center;font:italic 11px/1.6 Georgia,serif;color:rgba(43,58,47,.55);padding:18px 8px 3px}.version{text-align:center;font-size:9px;color:rgba(43,58,47,.38)}
+textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px solid var(--line);border-radius:20px;padding:16px;font-size:17px;line-height:1.55;background:rgba(255,255,255,.84);outline:none;resize:vertical;display:block;margin:0 auto} textarea:focus,input:focus,select:focus{border-color:#779d7d;box-shadow:0 0 0 3px rgba(119,157,125,.14)}
+.hint{font-size:11px;color:var(--muted);margin:5px 5px 8px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mainbtn{border:0;border-radius:18px;padding:12px 7px;font-size:17px;font-weight:700;background:rgba(255,255,255,.86);color:var(--ink);box-shadow:0 7px 18px rgba(37,62,44,.08)}.mainbtn.primary{background:#416b4c;color:white}.mainbtn:active,.iconbtn:active{transform:scale(.98)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.stat{background:rgba(255,255,255,.62);padding:13px 7px;border-radius:16px;text-align:center}.stat small{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;margin-top:5px;font-size:15px}
+.tip{margin-top:9px;text-align:left;background:rgba(255,255,255,.54);border-radius:18px;padding:9px 12px;line-height:1.55}.tip b{font-size:13px}.tip div{font-size:13px;color:#46554a;margin-top:5px}
+.bless{text-align:center;font:italic 9px/1.35 Georgia,serif;color:rgba(43,58,47,.55);padding:8px 5px 2px}.version{text-align:center;font-size:9px;color:rgba(43,58,47,.38)}
 .view{display:none}.view.active{display:block}.topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}.topbar h2{margin:0;flex:1;font-size:21px}.back{border:0;background:rgba(255,255,255,.78);border-radius:14px;padding:10px 13px;font-size:15px}
-.quick{display:flex;gap:8px;overflow:auto;padding:2px 0 12px}.chip{white-space:nowrap;border:1px solid var(--line);background:white;border-radius:999px;padding:8px 12px}.dates{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 5px 4px}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:14px;padding:11px;background:white;font-size:15px}
+.quick{display:flex;gap:8px;overflow:auto;padding:2px 0 12px}.chip{white-space:nowrap;border:1px solid var(--line);background:white;border-radius:999px;padding:8px 12px}.dates{display:grid;grid-template-columns:1fr 1fr;gap:10px}.date-lines{display:grid;gap:8px}.date-line{display:grid;grid-template-columns:105px 1fr;align-items:center;gap:8px}.date-line label{font-size:13px;color:var(--muted);text-align:right}.date-line input{width:100%;border:1px solid var(--line);border-radius:14px;padding:10px;background:white;font-size:14px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 5px 4px}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:14px;padding:11px;background:white;font-size:15px}
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}.summary .stat{background:rgba(255,255,255,.78)}
 .tablewrap{overflow:auto;border-radius:16px;background:rgba(255,255,255,.72)}table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left}th{background:rgba(230,239,229,.8);position:sticky;top:0}.rowpick{cursor:pointer}.rowpick.selected{background:#e2efdf}
 .section{margin-top:14px}.section h3{font-size:16px;margin:0 0 9px}.analysis-box{background:rgba(255,255,255,.7);border-radius:18px;padding:14px;margin:10px 0;line-height:1.65;font-size:14px}.analysis-box ul{margin:7px 0 0;padding-left:20px}
 .actions{display:flex;gap:10px;margin-top:14px}.actions button{flex:1}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:rgba(31,45,35,.92);color:white;padding:11px 16px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .editor{display:none;margin-top:14px}.editor.show{display:block}.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editgrid .wide{grid-column:1/-1}
-@media(max-width:420px){.app{padding-left:12px;padding-right:12px}.card{padding:16px}.title{font-size:24px}.stats{gap:6px}.stat strong{font-size:13px}.dates,.editgrid{grid-template-columns:1fr}.editgrid .wide{grid-column:auto}}
+@media(max-width:420px){.app{padding-left:8px;padding-right:8px}.card{border-radius:20px}textarea{width:56%;min-width:205px;min-height:70px}.card{padding:16px}.title{font-size:24px}.stats{gap:6px}.stat strong{font-size:13px}.dates,.editgrid{grid-template-columns:1fr}.editgrid .wide{grid-column:auto}}
 @media print{body:before,body:after,.mini-tools,.grid,.quick,.actions,.back{display:none!important}.app{max-width:none}.card{box-shadow:none;border:0;background:white}}
 </style>
 </head>
@@ -39,12 +39,10 @@ textarea{width:100%;min-height:112px;border:1px solid var(--line);border-radius:
   <div class="title">家庭收支 · 生活管家</div>
   <div id="todayLabel" class="date"></div>
   <div id="quote" class="quote"></div>
-  <div class="mini-tools"><button class="iconbtn" id="speakBtn">🔊 朗读</button><button class="iconbtn" id="musicBtn">♫ 音乐</button></div>
   <textarea id="entryText" placeholder="🎙 请说出或输入今天的收支……&#10;例如：买苹果香蕉46元，家里吃"></textarea>
   <div class="hint">可直接使用 iPhone 键盘上的麦克风进行语音听写</div>
   <div class="grid">
-   <button class="mainbtn primary" id="addBtn">录入</button><button class="mainbtn" id="queryBtn">查询</button>
-   <button class="mainbtn" id="analysisBtn">分析</button><button class="mainbtn" id="clearBtn">清屏</button>
+   <button class="mainbtn primary" id="addBtn">录入</button><button class="mainbtn" id="queryBtn">查询</button><button class="mainbtn" id="clearBtn">清屏</button>
   </div>
   <div class="stats">
    <div class="stat"><small>今日收入</small><strong id="todayIncome">¥0.00</strong></div>
@@ -53,7 +51,7 @@ textarea{width:100%;min-height:112px;border:1px solid var(--line);border-radius:
   </div>
   <div class="tip"><b>☀ 今日生活小常识</b><div id="dailyTip"></div></div>
   <div class="bless">With my warmest wishes, today and every day, to all my family and friends.</div>
-  <div class="version">家庭收支 · 生活管家 v1.0 · 2026.09.27</div>
+  <div class="version">家庭收支 · 生活管家 v1.1 · 2026.09.27</div>
  </div>
 </section>
 
@@ -63,7 +61,10 @@ textarea{width:100%;min-height:112px;border:1px solid var(--line);border-radius:
   <div class="quick">
    <button class="chip" data-range="today">今天</button><button class="chip" data-range="week">本周</button><button class="chip" data-range="month">本月</button><button class="chip" data-range="lastMonth">上月</button><button class="chip" data-range="year">今年</button>
   </div>
-  <div class="dates"><div class="field"><label>开始日期</label><input type="date" id="startDate"></div><div class="field"><label>结束日期</label><input type="date" id="endDate"></div></div>
+  <div class="date-lines">
+  <div class="date-line"><label>查询开始日期</label><input type="date" id="startDate"></div>
+  <div class="date-line"><label>查询结束日期</label><input type="date" id="endDate"></div>
+ </div>
   <div class="actions"><button class="mainbtn primary" id="doQuery">查询</button><button class="mainbtn" onclick="window.print()">打印</button></div>
   <div id="queryResults"></div>
   <div class="editor" id="editor">
@@ -78,7 +79,7 @@ textarea{width:100%;min-height:112px;border:1px solid var(--line);border-radius:
    </div>
    <div class="actions"><button class="mainbtn primary" id="saveEdit">保存修改</button><button class="mainbtn" id="cancelEdit">取消</button></div>
   </div>
-  <div class="actions"><button class="mainbtn" id="modifyBtn">修改</button><button class="mainbtn" data-back>返回</button></div>
+  <div class="actions"><button class="mainbtn" id="modifyBtn">修改</button><button class="mainbtn primary" id="queryAnalysisBtn">分析</button></div>
  </div>
 </section>
 
@@ -89,7 +90,7 @@ textarea{width:100%;min-height:112px;border:1px solid var(--line);border-radius:
    <button class="chip" data-arange="month">本月</button><button class="chip" data-arange="lastMonth">上月</button><button class="chip" data-arange="year">今年</button><button class="chip" data-arange="all">全部</button>
   </div>
   <div id="analysisContent"></div>
-  <div class="actions"><button class="mainbtn" data-back>返回</button></div>
+  <div class="actions"><button class="mainbtn primary" id="readAnalysisBtn">🔊 朗读</button></div>
  </div>
 </section>
 </div>
@@ -167,11 +168,10 @@ let selectedId=null;
 function renderQuery(){
  const start=startDate.value,end=endDate.value;if(!start||!end||start>end){toast('请选择正确的日期区间');return}
  const list=filterEntries(loadEntries(),start,end).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)),s=summarizeEntries(list);
- const denom=s.expense+s.investment||1;
- const cats=Object.entries(s.by).sort((a,b)=>b[1].amount-a[1].amount).map(([c,v])=>`<tr><td>${c}</td><td>${v.count}</td><td>${money(v.amount)}</td><td>${(v.amount/denom*100).toFixed(1)}%</td></tr>`).join('');
+ const cats=Object.entries(s.by).sort((a,b)=>b[1].amount-a[1].amount).map(([c,v])=>`<tr><td>${c}</td><td>${v.count}</td><td>${money(v.amount)}</td></tr>`).join('');
  const rows=list.map(e=>`<tr class="rowpick ${e.id===selectedId?'selected':''}" data-id="${e.id}"><td>${e.date}<br><small>${e.time||''}</small></td><td>${e.category}</td><td>${esc(e.name)}</td><td>${money(e.amount)}</td><td>${esc(e.purpose||'')}</td></tr>`).join('');
  queryResults.innerHTML=`<div class="summary"><div class="stat"><small>总收入</small><strong>${money(s.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(s.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(s.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(s.balance)}</strong></div></div>
- <div class="section"><h3>分类汇总</h3><div class="tablewrap"><table><thead><tr><th>类别</th><th>笔数</th><th>金额</th><th>占比</th></tr></thead><tbody>${cats||'<tr><td colspan="4">暂无记录</td></tr>'}</tbody></table></div></div>
+ <div class="section"><h3>分类汇总</h3><div class="tablewrap"><table><thead><tr><th>类别</th><th>笔数</th><th>金额</th></tr></thead><tbody>${cats||'<tr><td colspan="3">暂无记录</td></tr>'}</tbody></table></div></div>
  <div class="section"><h3>收支明细</h3><div class="tablewrap"><table><thead><tr><th>时间</th><th>类别</th><th>名称</th><th>价钱</th><th>用途</th></tr></thead><tbody>${rows||'<tr><td colspan="5">暂无记录</td></tr>'}</tbody></table></div></div>`;
  document.querySelectorAll('.rowpick').forEach(r=>r.onclick=()=>{selectedId=r.dataset.id;renderQuery()});
 }
@@ -212,20 +212,28 @@ function renderAnalysis(kind='month'){
  <div class="analysis-box"><b>二、程序分析</b><ul>${a.inference.map(x=>`<li>${x}</li>`).join('')}</ul></div>
  <div class="analysis-box"><b>三、家庭财务建议</b><ul>${a.advice.map(x=>`<li>${x}</li>`).join('')}</ul><div style="margin-top:8px;color:#68756b;font-size:12px">以上为一般性财务管理参考，不构成具体投资产品建议。</div></div>`;
 }
-let audioCtx=null,osc=null,gain=null;
-function toggleMusic(){
- if(osc){try{osc.stop()}catch(e){}osc=null;musicBtn.textContent='♫ 音乐';return}
- const AC=window.AudioContext||window.webkitAudioContext;if(!AC){toast('当前浏览器不支持网页音乐');return}
- audioCtx=audioCtx||new AC();gain=audioCtx.createGain();gain.gain.value=.018;osc=audioCtx.createOscillator();osc.type='sine';osc.frequency.value=174;osc.connect(gain);gain.connect(audioCtx.destination);osc.start();musicBtn.textContent='❚❚ 音乐';
+function readAnalysis(){
+ if(!('speechSynthesis' in window)){toast('当前浏览器不支持朗读');return}
+ speechSynthesis.cancel();
+ const text=document.getElementById('analysisContent').innerText;
+ if(!text.trim()){toast('当前没有可朗读的分析内容');return}
+ const u=new SpeechSynthesisUtterance(text);u.lang='zh-CN';u.rate=.9;speechSynthesis.speak(u);
 }
-function speakHome(){if(!('speechSynthesis'in window)){toast('当前浏览器不支持朗读');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`${todayLabel.textContent}。${quote.textContent}。今日生活小常识：${dailyTip.textContent}`);u.lang='zh-CN';u.rate=.9;speechSynthesis.speak(u)}
 function init(){
  const now=new Date(),week='日一二三四五六'[now.getDay()];todayLabel.textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日  星期${week}`;
  const seed=(now.getFullYear()*400+now.getMonth()*32+now.getDate());quote.textContent='“'+quotes[seed%quotes.length]+'”';dailyTip.textContent=tips[(seed+2)%tips.length];
  const bgs=[['#dcebd7','#f8e9cf','#d8e8e6'],['#e8e3d4','#dce9df','#f5e2d8'],['#d9e8e6','#f3ead9','#e4dfec']][seed%3];document.body.style.background=`linear-gradient(135deg,${bgs[0]},${bgs[1]} 50%,${bgs[2]})`;
  editCategory.innerHTML=categories.map(c=>`<option>${c}</option>`).join('');setRange('month');updateToday();
 }
-addBtn.onclick=addEntry;clearBtn.onclick=()=>{entryText.value='';entryText.focus()};queryBtn.onclick=()=>{showView('query');renderQuery()};analysisBtn.onclick=()=>{showView('analysis');renderAnalysis('month')};doQuery.onclick=renderQuery;modifyBtn.onclick=openEditor;saveEdit.onclick=saveEditRecord;cancelEdit.onclick=()=>editor.classList.remove('show');speakBtn.onclick=speakHome;musicBtn.onclick=toggleMusic;
+addBtn.onclick=addEntry;
+clearBtn.onclick=()=>{entryText.value='';entryText.focus()};
+queryBtn.onclick=()=>{showView('query');renderQuery()};
+doQuery.onclick=renderQuery;
+modifyBtn.onclick=openEditor;
+queryAnalysisBtn.onclick=()=>{showView('analysis');renderAnalysis('month')};
+saveEdit.onclick=saveEditRecord;
+cancelEdit.onclick=()=>editor.classList.remove('show');
+readAnalysisBtn.onclick=readAnalysis;
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showView('home'));document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{setRange(b.dataset.range);renderQuery()});document.querySelectorAll('[data-arange]').forEach(b=>b.onclick=()=>renderAnalysis(b.dataset.arange));
 init();
 </script>
