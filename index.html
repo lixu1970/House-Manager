@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#eaf2e5">
-<title>家庭收支 · 生活管家</title>
+<title>我的财务报表</title>
 <style>
 :root{--ink:#233128;--muted:#657368;--glass:rgba(255,255,255,.78);--line:rgba(42,72,53,.12);--shadow:0 18px 55px rgba(31,57,40,.14)}
 *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);min-height:100vh;background:#dfead9}
@@ -16,16 +16,16 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradie
 .hero{text-align:center;padding:14px 14px 10px}.title{font-size:24px;font-weight:800;letter-spacing:.06em}.date{margin-top:7px;color:var(--muted);font-size:14px}.quote{margin:8px auto 5px;font-family:Georgia,"Songti SC",serif;font-size:17px;line-height:1.65;max-width:520px}
 .mini-tools{display:flex;justify-content:center;gap:10px;margin:12px 0}.iconbtn{border:0;background:rgba(255,255,255,.72);border-radius:999px;padding:9px 13px;font-size:14px;color:var(--ink);box-shadow:0 5px 15px rgba(30,50,35,.08)}
 textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px solid var(--line);border-radius:20px;padding:16px;font-size:17px;line-height:1.55;background:rgba(255,255,255,.84);outline:none;resize:vertical;display:block;margin:0 auto} textarea:focus,input:focus,select:focus{border-color:#779d7d;box-shadow:0 0 0 3px rgba(119,157,125,.14)}
-.hint{font-size:11px;color:var(--muted);margin:5px 5px 8px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mainbtn{border:0;border-radius:18px;padding:12px 7px;font-size:17px;font-weight:700;background:rgba(255,255,255,.86);color:var(--ink);box-shadow:0 7px 18px rgba(37,62,44,.08)}.mainbtn.primary{background:#416b4c;color:white}.mainbtn:active,.iconbtn:active{transform:scale(.98)}
+.hint{font-size:11px;color:var(--muted);margin:5px 5px 8px}.entry-lines{display:grid;gap:8px;margin-top:9px}.entry-line{display:grid;grid-template-columns:42px 1fr;align-items:center;gap:7px}.entry-line input{width:100%;min-width:0;border:1px solid var(--line);border-radius:14px;padding:12px;font-size:16px;background:rgba(255,255,255,.86)}.income-label{color:#278447}.expense-label{color:#c43b3b}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mainbtn{border:0;border-radius:18px;padding:12px 7px;font-size:17px;font-weight:700;background:rgba(255,255,255,.86);color:var(--ink);box-shadow:0 7px 18px rgba(37,62,44,.08)}.mainbtn.primary{background:#416b4c;color:white}.mainbtn:active,.iconbtn:active{transform:scale(.98)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.stat{background:rgba(255,255,255,.62);padding:13px 7px;border-radius:16px;text-align:center}.stat small{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;margin-top:5px;font-size:15px}
 .tip{margin-top:9px;text-align:left;background:rgba(255,255,255,.54);border-radius:18px;padding:9px 12px;line-height:1.55}.tip b{font-size:13px}.tip div{font-size:13px;color:#46554a;margin-top:5px}
 .bless{text-align:center;font:italic 9px/1.35 Georgia,serif;color:rgba(43,58,47,.55);padding:8px 5px 2px}.version{text-align:center;font-size:9px;color:rgba(43,58,47,.38)}
 .view{display:none}.view.active{display:block}.topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}.topbar h2{margin:0;flex:1;font-size:21px}.back{border:0;background:rgba(255,255,255,.78);border-radius:14px;padding:10px 13px;font-size:15px}
 .quick{display:flex;gap:8px;overflow:auto;padding:2px 0 12px}.chip{white-space:nowrap;border:1px solid var(--line);background:white;border-radius:999px;padding:8px 12px}.dates{display:grid;grid-template-columns:1fr 1fr;gap:10px}.date-lines{display:grid;gap:8px}.date-line{display:grid;grid-template-columns:105px 1fr;align-items:center;gap:8px}.date-line label{font-size:13px;color:var(--muted);text-align:right}.date-line input{width:100%;border:1px solid var(--line);border-radius:14px;padding:10px;background:white;font-size:14px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 5px 4px}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:14px;padding:11px;background:white;font-size:15px}
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}.summary .stat{background:rgba(255,255,255,.78)}
-.tablewrap{overflow:auto;border-radius:16px;background:rgba(255,255,255,.72)}table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left}th{background:rgba(230,239,229,.8);position:sticky;top:0}.rowpick{cursor:pointer}.rowpick.selected{background:#e2efdf}
+.tablewrap{overflow:auto;border-radius:16px;background:rgba(255,255,255,.72)}table{width:100%;border-collapse:collapse;font-size:13px}.compact-table table{table-layout:fixed;min-width:0}.compact-table th:nth-child(1){width:22%}.compact-table th:nth-child(2){width:22%}.compact-table th:nth-child(3){width:36%}.compact-table th:nth-child(4){width:20%}.compact-table td{word-break:break-word;padding:8px 4px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left}th{background:rgba(230,239,229,.8);position:sticky;top:0}.rowpick{cursor:pointer}.rowpick.selected{background:#e2efdf}
 .section{margin-top:14px}.section h3{font-size:16px;margin:0 0 9px}.analysis-box{background:rgba(255,255,255,.7);border-radius:18px;padding:14px;margin:10px 0;line-height:1.65;font-size:14px}.analysis-box ul{margin:7px 0 0;padding-left:20px}
-.actions{display:flex;gap:10px;margin-top:14px}.actions button{flex:1}
+.actions{display:flex;gap:10px;margin-top:14px}.actions button{flex:1}.mainbtn.danger{background:#c83f3f;color:#fff}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:rgba(31,45,35,.92);color:white;padding:11px 16px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .editor{display:none;margin-top:14px}.editor.show{display:block}.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editgrid .wide{grid-column:1/-1}
 @media(max-width:420px){.app{padding-left:8px;padding-right:8px}.card{border-radius:20px}textarea{width:56%;min-width:205px;min-height:70px}.card{padding:16px}.title{font-size:24px}.stats{gap:6px}.stat strong{font-size:13px}.dates,.editgrid{grid-template-columns:1fr}.editgrid .wide{grid-column:auto}}
@@ -36,13 +36,12 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
 <div class="app">
 <section id="home" class="view active">
  <div class="card hero">
-  <div class="title">家庭收支 · 生活管家</div>
+  <div class="title">我的财务报表</div>
   <div id="todayLabel" class="date"></div>
   <div id="quote" class="quote"></div>
-  <textarea id="entryText" placeholder="🎙 请说出或输入今天的收支……&#10;例如：买苹果香蕉46元，家里吃"></textarea>
-  <div class="hint">可直接使用 iPhone 键盘上的麦克风进行语音听写</div>
+  <div class="entry-lines"><div class="entry-line"><b class="income-label">收入</b><input id="incomeText" placeholder="例如：工资到账8500元"></div><div class="entry-line"><b class="expense-label">支出</b><input id="expenseText" placeholder="例如：买苹果香蕉46元，家里吃"></div></div>
   <div class="grid">
-   <button class="mainbtn primary" id="addBtn">录入</button><button class="mainbtn" id="queryBtn">查询</button><button class="mainbtn" id="clearBtn">清屏</button>
+   <button class="mainbtn primary" id="addBtn">单笔录入</button><button class="mainbtn" id="clearBtn">清屏再录入</button><button class="mainbtn" id="queryBtn">查询</button>
   </div>
   <div class="stats">
    <div class="stat"><small>今日收入</small><strong id="todayIncome">¥0.00</strong></div>
@@ -51,21 +50,18 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
   </div>
   <div class="tip"><b>☀ 今日生活小常识</b><div id="dailyTip"></div></div>
   <div class="bless">With my warmest wishes, today and every day, to all my family and friends.</div>
-  <div class="version">家庭收支 · 生活管家 v1.1 · 2026.09.27</div>
+  <div class="version">我的财务报表 v1.3 · 2026.09.29</div>
  </div>
 </section>
 
 <section id="query" class="view">
  <div class="card">
   <div class="topbar"><button class="back" data-back>‹ 返回</button><h2>收支查询</h2></div>
-  <div class="quick">
-   <button class="chip" data-range="today">今天</button><button class="chip" data-range="week">本周</button><button class="chip" data-range="month">本月</button><button class="chip" data-range="lastMonth">上月</button><button class="chip" data-range="year">今年</button>
-  </div>
   <div class="date-lines">
   <div class="date-line"><label>查询开始日期</label><input type="date" id="startDate"></div>
   <div class="date-line"><label>查询结束日期</label><input type="date" id="endDate"></div>
  </div>
-  <div class="actions"><button class="mainbtn primary" id="doQuery">查询</button><button class="mainbtn" onclick="window.print()">打印</button></div>
+  <div class="actions"><button class="mainbtn primary" id="doQuery">查询</button><button class="mainbtn" id="topAnalysisBtn">分析</button></div>
   <div id="queryResults"></div>
   <div class="editor" id="editor">
    <div class="section"><h3>修改选中的记录</h3></div>
@@ -79,18 +75,15 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
    </div>
    <div class="actions"><button class="mainbtn primary" id="saveEdit">保存修改</button><button class="mainbtn" id="cancelEdit">取消</button></div>
   </div>
-  <div class="actions"><button class="mainbtn" id="modifyBtn">修改</button><button class="mainbtn primary" id="queryAnalysisBtn">分析</button></div>
+  <div class="actions"><button class="mainbtn" id="modifyBtn">修改</button><button class="mainbtn primary" id="downloadQueryBtn">下载</button></div>
  </div>
 </section>
 
 <section id="analysis" class="view">
  <div class="card">
   <div class="topbar"><button class="back" data-back>‹ 返回</button><h2>财务分析</h2></div>
-  <div class="quick">
-   <button class="chip" data-arange="month">本月</button><button class="chip" data-arange="lastMonth">上月</button><button class="chip" data-arange="year">今年</button><button class="chip" data-arange="all">全部</button>
-  </div>
   <div id="analysisContent"></div>
-  <div class="actions"><button class="mainbtn primary" id="readAnalysisBtn">🔊 朗读</button></div>
+  <div class="actions"><button class="mainbtn primary" id="downloadAnalysisBtn">下载</button><button class="mainbtn danger" id="resetBtn">重置</button></div>
  </div>
 </section>
 </div>
@@ -124,7 +117,7 @@ function classify(text,type){
  for(const [c,re] of rules) if(re.test(text)) return c;
  return '其他';
 }
-function parseEntry(text){
+function parseEntry(text,forcedType=null){
  const raw=(text||'').trim(); if(!raw)return {error:'请输入一笔收支内容'};
  const matches=[...raw.matchAll(/(?:¥|￥)?\s*(\d+(?:\.\d{1,2})?)\s*(?:元|块|块钱|人民币)?/g)];
  const candidates=matches.filter(m=>{const n=Number(m[1]);return n>0 && !(n>=1900&&n<=2100)});
@@ -133,7 +126,7 @@ function parseEntry(text){
  const pick=(preferred.length?preferred:candidates).at(-1), amount=Number(pick[1]);
  const isInvestment=/基金|股票|黄金|理财|定投|存款|投资|债券/.test(raw)&&!/收益|分红|赎回到账/.test(raw);
  const isIncome=/收入|工资|薪资|奖金|到账|退款|补贴|报销|收款|分红|收益/.test(raw)&&!isInvestment;
- const type=isInvestment?'investment':isIncome?'income':'expense';
+ const type=forcedType||(isInvestment?'investment':isIncome?'income':'expense');
  const category=classify(raw,type);
  let name=raw.replace(pick[0],'').replace(/今天|今日|昨天|支出|收入|花了|花费|支付|购买|买了|买|交了|交付|交|到账|收到/g,'').replace(/[，,。；;]/g,' ').trim();
  if(!name) name=category;
@@ -141,9 +134,7 @@ function parseEntry(text){
  return {id:Date.now()+Math.random().toString(16).slice(2),date:localDate(),time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),type,category,name:name.slice(0,60),amount,purpose,raw,createdAt:new Date().toISOString()};
 }
 function addEntry(){
- const box=document.getElementById('entryText'),r=parseEntry(box.value);
- if(r.error){toast(r.error);return}
- const a=loadEntries();a.push(r);saveEntries(a);box.value='';updateToday();toast(`✓ 已录入：${r.category}｜${r.name}｜${r.amount.toFixed(2)}元`);
+ const income=incomeText.value.trim(),expense=expenseText.value.trim(); if(!income&&!expense){toast('请在“收入”或“支出”框输入一笔记录');return} if(income&&expense){toast('单笔录入时请只填写收入或支出其中一项');return} const r=parseEntry(income||expense,income?'income':'expense'); if(r.error){toast(r.error);return} const a=loadEntries();a.push(r);saveEntries(a);incomeText.value='';expenseText.value='';updateToday();toast(`✓ 已录入：${r.category}｜${r.name}｜${r.amount.toFixed(2)}元`);
 }
 function filterEntries(entries,start,end){return entries.filter(e=>e.date>=start&&e.date<=end)}
 function summarizeEntries(entries){
@@ -167,12 +158,9 @@ function setRange(kind){const r=getRange(kind);if(r){startDate.value=r[0];endDat
 let selectedId=null;
 function renderQuery(){
  const start=startDate.value,end=endDate.value;if(!start||!end||start>end){toast('请选择正确的日期区间');return}
- const list=filterEntries(loadEntries(),start,end).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)),s=summarizeEntries(list);
- const cats=Object.entries(s.by).sort((a,b)=>b[1].amount-a[1].amount).map(([c,v])=>`<tr><td>${c}</td><td>${v.count}</td><td>${money(v.amount)}</td></tr>`).join('');
- const rows=list.map(e=>`<tr class="rowpick ${e.id===selectedId?'selected':''}" data-id="${e.id}"><td>${e.date}<br><small>${e.time||''}</small></td><td>${e.category}</td><td>${esc(e.name)}</td><td>${money(e.amount)}</td><td>${esc(e.purpose||'')}</td></tr>`).join('');
- queryResults.innerHTML=`<div class="summary"><div class="stat"><small>总收入</small><strong>${money(s.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(s.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(s.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(s.balance)}</strong></div></div>
- <div class="section"><h3>分类汇总</h3><div class="tablewrap"><table><thead><tr><th>类别</th><th>笔数</th><th>金额</th></tr></thead><tbody>${cats||'<tr><td colspan="3">暂无记录</td></tr>'}</tbody></table></div></div>
- <div class="section"><h3>收支明细</h3><div class="tablewrap"><table><thead><tr><th>时间</th><th>类别</th><th>名称</th><th>价钱</th><th>用途</th></tr></thead><tbody>${rows||'<tr><td colspan="5">暂无记录</td></tr>'}</tbody></table></div></div>`;
+ const list=filterEntries(loadEntries(),start,end).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)),sum=summarizeEntries(list);
+ const rows=list.map(e=>`<tr class="rowpick ${e.id===selectedId?'selected':''}" data-id="${e.id}"><td>${e.date.slice(5)}<br><small>${e.time||''}</small></td><td>${e.type==='income'?'收入':e.type==='investment'?'投资':'支出'}<br><small>${e.category}</small></td><td>${esc(e.name)}${e.purpose?`<br><small>${esc(e.purpose)}</small>`:''}</td><td>${money(e.amount)}</td></tr>`).join('');
+ queryResults.innerHTML=`<div class="summary"><div class="stat"><small>总收入</small><strong>${money(sum.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(sum.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(sum.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(sum.balance)}</strong></div></div><div class="section"><h3>收支明细</h3><div class="tablewrap compact-table"><table><thead><tr><th>日期</th><th>类别</th><th>名称/用途</th><th>金额</th></tr></thead><tbody>${rows||'<tr><td colspan="4">暂无记录</td></tr>'}</tbody></table></div></div>`;
  document.querySelectorAll('.rowpick').forEach(r=>r.onclick=()=>{selectedId=r.dataset.id;renderQuery()});
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -212,13 +200,10 @@ function renderAnalysis(kind='month'){
  <div class="analysis-box"><b>二、程序分析</b><ul>${a.inference.map(x=>`<li>${x}</li>`).join('')}</ul></div>
  <div class="analysis-box"><b>三、家庭财务建议</b><ul>${a.advice.map(x=>`<li>${x}</li>`).join('')}</ul><div style="margin-top:8px;color:#68756b;font-size:12px">以上为一般性财务管理参考，不构成具体投资产品建议。</div></div>`;
 }
-function readAnalysis(){
- if(!('speechSynthesis' in window)){toast('当前浏览器不支持朗读');return}
- speechSynthesis.cancel();
- const text=document.getElementById('analysisContent').innerText;
- if(!text.trim()){toast('当前没有可朗读的分析内容');return}
- const u=new SpeechSynthesisUtterance(text);u.lang='zh-CN';u.rate=.9;speechSynthesis.speak(u);
-}
+function downloadBlob(filename,text,type='text/plain;charset=utf-8'){const blob=new Blob(["\ufeff"+text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function downloadQuery(){const start=startDate.value,end=endDate.value;if(!start||!end||start>end){toast('请先选择正确日期并查询');return}const list=filterEntries(loadEntries(),start,end);const lines=[['日期','时间','性质','类别','名称','金额','用途'],...list.map(e=>[e.date,e.time||'',e.type==='income'?'收入':e.type==='investment'?'投资':'支出',e.category,e.name,e.amount,e.purpose||''])];const csv=lines.map(row=>row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\r\n');downloadBlob(`收支明细_${start}_${end}.csv`,csv,'text/csv;charset=utf-8')}
+function downloadAnalysis(){downloadBlob(`财务分析_${localDate()}.txt`,'收支管理 - 财务分析\n\n'+analysisContent.innerText+'\n\n生成日期：'+localDate())}
+function resetAll(){if(!confirm('警告：重置将清空所有收入和支出记录，且无法恢复。\n\n确定要继续吗？'))return;if(!confirm('请再次确认：是否永久清空全部记录？'))return;localStorage.removeItem(KEY);selectedId=null;updateToday();renderAnalysis('all');toast('全部收支记录已清空')}
 function init(){
  const now=new Date(),week='日一二三四五六'[now.getDay()];todayLabel.textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日  星期${week}`;
  const seed=(now.getFullYear()*400+now.getMonth()*32+now.getDate());quote.textContent='“'+quotes[seed%quotes.length]+'”';dailyTip.textContent=tips[(seed+2)%tips.length];
@@ -226,15 +211,17 @@ function init(){
  editCategory.innerHTML=categories.map(c=>`<option>${c}</option>`).join('');setRange('month');updateToday();
 }
 addBtn.onclick=addEntry;
-clearBtn.onclick=()=>{entryText.value='';entryText.focus()};
+clearBtn.onclick=()=>{incomeText.value='';expenseText.value='';incomeText.focus()};
 queryBtn.onclick=()=>{showView('query');renderQuery()};
 doQuery.onclick=renderQuery;
 modifyBtn.onclick=openEditor;
-queryAnalysisBtn.onclick=()=>{showView('analysis');renderAnalysis('month')};
+topAnalysisBtn.onclick=()=>{showView('analysis');renderAnalysis('all')};
+downloadQueryBtn.onclick=downloadQuery;
 saveEdit.onclick=saveEditRecord;
 cancelEdit.onclick=()=>editor.classList.remove('show');
-readAnalysisBtn.onclick=readAnalysis;
-document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showView('home'));document.querySelectorAll('[data-range]').forEach(b=>b.onclick=()=>{setRange(b.dataset.range);renderQuery()});document.querySelectorAll('[data-arange]').forEach(b=>b.onclick=()=>renderAnalysis(b.dataset.arange));
+downloadAnalysisBtn.onclick=downloadAnalysis;
+resetBtn.onclick=resetAll;
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showView('home'));renderQuery()});
 init();
 </script>
 </body>
