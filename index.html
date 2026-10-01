@@ -16,7 +16,7 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradie
 .hero{text-align:center;padding:18px 16px 14px;min-height:calc(100svh - 24px);display:flex;flex-direction:column;justify-content:space-around}.title{font-size:clamp(27px,7vw,34px);font-weight:800;letter-spacing:.06em}.date{margin-top:7px;color:var(--muted);font-size:clamp(16px,4.3vw,19px)}.quote{margin:8px auto 5px;font-family:Georgia,"Songti SC",serif;font-size:clamp(18px,4.8vw,21px);line-height:1.65;max-width:520px}
 .mini-tools{display:flex;justify-content:center;gap:10px;margin:12px 0}.iconbtn{border:0;background:rgba(255,255,255,.72);border-radius:999px;padding:9px 13px;font-size:14px;color:var(--ink);box-shadow:0 5px 15px rgba(30,50,35,.08)}
 textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px solid var(--line);border-radius:20px;padding:16px;font-size:17px;line-height:1.55;background:rgba(255,255,255,.84);outline:none;resize:vertical;display:block;margin:0 auto} textarea:focus,input:focus,select:focus{border-color:#779d7d;box-shadow:0 0 0 3px rgba(119,157,125,.14)}
-.hint{font-size:11px;color:var(--muted);margin:5px 5px 8px}.entry-lines{display:grid;gap:8px;margin-top:9px}.entry-line{display:grid;grid-template-columns:52px 1fr;align-items:center;gap:7px}.entry-line input{width:100%;min-width:0;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:clamp(17px,4.5vw,20px);background:rgba(255,255,255,.86)}.income-label,.expense-label{color:#111;font-size:clamp(17px,4.5vw,20px)}.grid{display:flex;justify-content:center;gap:12px;margin-top:22px}.grid .mainbtn{flex:0 1 145px;max-width:42%;padding-left:12px;padding-right:12px}.mainbtn{border:0;border-radius:18px;padding:14px 7px;font-size:clamp(16px,4.2vw,19px);font-weight:700;background:#2f6fa8;color:#fff;box-shadow:0 7px 18px rgba(37,62,44,.08)}.mainbtn.primary{background:#2f6fa8;color:#fff}.mainbtn:active,.iconbtn:active{transform:scale(.98)}
+.hint{font-size:11px;color:var(--muted);margin:5px 5px 8px}.entry-lines{display:grid;gap:8px;margin-top:9px}.entry-line{display:grid;grid-template-columns:52px 1fr;align-items:center;gap:7px}.entry-line input{width:100%;min-width:0;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:clamp(17px,4.5vw,20px);background:rgba(255,255,255,.86)}.entry-line input:disabled{opacity:.48;background:rgba(235,235,235,.9)}.income-label,.expense-label{color:#111;font-size:clamp(17px,4.5vw,20px)}.grid{display:flex;justify-content:center;gap:12px;margin-top:22px}.grid .mainbtn{flex:0 1 145px;max-width:42%;padding-left:12px;padding-right:12px}.mainbtn{border:0;border-radius:18px;padding:14px 7px;font-size:clamp(16px,4.2vw,19px);font-weight:700;background:#2f6fa8;color:#fff;box-shadow:0 7px 18px rgba(37,62,44,.08)}.mainbtn.primary{background:#2f6fa8;color:#fff}.mainbtn:active,.iconbtn:active{transform:scale(.98)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.stat{background:rgba(255,255,255,.62);padding:13px 7px;border-radius:16px;text-align:center}.stat small{display:block;color:var(--muted);font-size:13px}.stat strong{display:block;margin-top:5px;font-size:17px}
 .tip{margin-top:9px;text-align:left;background:rgba(255,255,255,.54);border-radius:18px;padding:9px 12px;line-height:1.55}.tip b{font-size:16px}.tip div{font-size:15px;color:#46554a;margin-top:5px}
 .bless{text-align:center;font:italic 9px/1.35 Georgia,serif;color:rgba(43,58,47,.55);padding:8px 5px 2px}.version{text-align:center;font-size:9px;color:rgba(43,58,47,.38)}
@@ -51,7 +51,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
   <div id="quote" class="quote"></div>
   <div class="entry-lines"><div class="entry-line"><b class="income-label">收入</b><input id="incomeText" placeholder="例如：工资8500元；补录：260928 工资8500元"></div><div class="entry-line"><b class="expense-label">支出</b><input id="expenseText" placeholder="例如：买菜46元；补录：260928 买菜46元"></div></div>
   <div class="grid">
-   <button class="mainbtn primary" id="addBtn">单笔录入</button><button class="mainbtn" id="queryBtn">查询</button>
+   <button class="mainbtn primary" id="addBtn">计入账单</button><button class="mainbtn" id="queryBtn">查询</button>
   </div>
   <div class="stats">
    <div class="stat"><small>今日收入</small><strong id="todayIncome">¥0.00</strong></div>
@@ -60,14 +60,14 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
   </div>
   <div class="tip"><b>☀ 今日生活小常识</b><div id="dailyTip"></div></div>
   <div class="bless">With my warmest wishes, today and every day, to all my family and friends.</div>
-  <div class="version">流水帐随手记 v1.7 · 2026.09.29</div>
+  <div class="version">流水帐随手记 v1.8 · 2026.09.29</div>
  </div>
 </section>
 
 <section id="query" class="view">
  <div class="card">
   <div class="topbar"><button class="back" data-back>‹ 返回</button><h2>收支查询</h2></div>
-  <div class="date-lines">
+  <div class="date-lines" id="dateQueryPanel" style="display:none">
   <div class="date-line"><label>查询开始日期</label><input type="date" id="startDate"></div>
   <div class="date-line"><label>查询结束日期</label><input type="date" id="endDate"></div>
  </div>
@@ -170,7 +170,7 @@ function parseEntry(text,forcedType=null){
  return {id:Date.now()+Math.random().toString(16).slice(2),date:dated.date,time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),type,category,name:name.slice(0,60),amount,purpose,raw,createdAt:new Date().toISOString()};
 }
 function addEntry(){
- const income=incomeText.value.trim(),expense=expenseText.value.trim(); if(!income&&!expense){toast('请在“收入”或“支出”框输入一笔记录');return} if(income&&expense){toast('单笔录入时请只填写收入或支出其中一项');return} const r=parseEntry(income||expense,income?'income':'expense'); if(r.error){toast(r.error);return} const a=loadEntries();a.push(r);saveEntries(a);incomeText.value='';expenseText.value='';updateToday();toast(`✓ 已录入：${r.category}｜${r.name}｜${r.amount.toFixed(2)}元`);
+ const income=incomeText.value.trim(),expense=expenseText.value.trim(); if(!income&&!expense){toast('请在“收入”或“支出”框输入一笔记录');return} if(income&&expense){toast('单笔录入时请只填写收入或支出其中一项');return} const r=parseEntry(income||expense,income?'income':'expense'); if(r.error){toast(r.error);return} const a=loadEntries();a.push(r);saveEntries(a);incomeText.value='';expenseText.value='';incomeText.disabled=false;expenseText.disabled=false;updateToday();toast(`✓ 已计入账单：${r.category}｜${r.name}｜${r.amount.toFixed(2)}元`);
 }
 function filterEntries(entries,start,end){return entries.filter(e=>e.date>=start&&e.date<=end)}
 function summarizeEntries(entries){
@@ -200,7 +200,9 @@ function setAllTimeRange(){const r=getAllTimeRange();startDate.value=r[0];endDat
 function setRange(kind){const r=getRange(kind);if(r){startDate.value=r[0];endDate.value=r[1]}}
 let selectedId=null;
 function renderQuery(){
- const start=startDate.value,end=endDate.value;if(!start||!end||start>end){toast('请选择正确的日期区间');return}
+ let start=startDate.value,end=endDate.value;
+ if(!start){const r=getAllTimeRange();start=r[0];end=r[1]} else if(!end)end=start;
+ if(start>end){toast('请选择正确的日期区间');return}
  const base=filterEntries(loadEntries(),start,end);
  const dateQ=(document.getElementById('fDate')?.value||'').trim();
  const typeQ=document.getElementById('fType')?.value||'';
@@ -293,15 +295,36 @@ function toggleAnalysisSpeech(){
 }
 
 function resetAll(){if(!confirm('警告：重置将清空所有收入和支出记录，且无法恢复。\n\n确定要继续吗？'))return;if(!confirm('请再次确认：是否永久清空全部记录？'))return;localStorage.removeItem(KEY);selectedId=null;updateToday();renderAnalysis('all');toast('全部收支记录已清空')}
+let dateQueryOpen=false;
+function handleDateQuery(){
+ const panel=document.getElementById('dateQueryPanel');
+ if(!dateQueryOpen){
+  dateQueryOpen=true;panel.style.display='grid';startDate.value='';endDate.value='';startDate.focus();
+  toast('请选择开始日期；结束日期不填则查询当天');return;
+ }
+ if(!startDate.value){toast('请选择查询开始日期');return}
+ if(!endDate.value)endDate.value=startDate.value;
+ renderQuery();
+}
+
 function init(){
  const now=new Date(),week='日一二三四五六'[now.getDay()];todayLabel.textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日  星期${week}  ${getLunarText(now)}`;
  const seed=(now.getFullYear()*400+now.getMonth()*32+now.getDate());quote.textContent='“'+quotes[seed%quotes.length]+'”';dailyTip.textContent=tips[(seed+2)%tips.length];
  const bgs=[['#dcebd7','#f8e9cf','#d8e8e6'],['#e8e3d4','#dce9df','#f5e2d8'],['#d9e8e6','#f3ead9','#e4dfec']][seed%3];document.body.style.background=`linear-gradient(135deg,${bgs[0]},${bgs[1]} 50%,${bgs[2]})`;
  editCategory.innerHTML=categories.map(c=>`<option>${c}</option>`).join('');setAllTimeRange();updateToday();
 }
+function syncEntryChoice(){
+ const i=incomeText.value.trim(),e=expenseText.value.trim();
+ if(i&&!e){expenseText.disabled=true;incomeText.disabled=false}
+ else if(e&&!i){incomeText.disabled=true;expenseText.disabled=false}
+ else{incomeText.disabled=false;expenseText.disabled=false}
+}
+incomeText.addEventListener('input',syncEntryChoice);
+expenseText.addEventListener('input',syncEntryChoice);
+
 addBtn.onclick=addEntry;
-queryBtn.onclick=()=>{setAllTimeRange();showView('query');renderQuery()};
-doQuery.onclick=renderQuery;
+queryBtn.onclick=()=>{dateQueryOpen=false;dateQueryPanel.style.display='none';setAllTimeRange();showView('query');renderQuery()};
+doQuery.onclick=handleDateQuery;
 topAnalysisBtn.onclick=()=>{showView('analysis');renderAnalysis('all')};
 downloadQueryBtn.onclick=downloadQuery;
 saveEdit.onclick=saveEditRecord;
