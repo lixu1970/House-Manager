@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#eaf2e5">
-<title>我的财务报表</title>
+<title>流水帐随手记</title>
 <style>
 :root{--ink:#233128;--muted:#657368;--glass:rgba(255,255,255,.78);--line:rgba(42,72,53,.12);--shadow:0 18px 55px rgba(31,57,40,.14)}
 *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);min-height:100vh;background:#dfead9}
@@ -29,6 +29,9 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:rgba(31,45,35,.92);color:white;padding:11px 16px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .editor{display:none;margin-top:14px}.editor.show{display:block}.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editgrid .wide{grid-column:1/-1}
 
+.filter-row th{padding:5px 3px;background:rgba(245,249,244,.96)}
+.filter-row input,.filter-row select{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 3px;font-size:12px;background:#fff}
+.amount-filter{display:grid;grid-template-columns:1fr 1fr;gap:2px}
 .pie-wrap{background:rgba(255,255,255,.72);border-radius:20px;padding:15px;margin:8px 0 14px;text-align:center}
 .pie-title{font-size:18px;font-weight:700;margin-bottom:10px}
 .pie-chart{width:min(220px,62vw);aspect-ratio:1;border-radius:50%;margin:0 auto 12px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
@@ -43,7 +46,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
 <div class="app">
 <section id="home" class="view active">
  <div class="card hero">
-  <div class="title">我的财务报表</div>
+  <div class="title">流水帐随手记</div>
   <div id="todayLabel" class="date"></div>
   <div id="quote" class="quote"></div>
   <div class="entry-lines"><div class="entry-line"><b class="income-label">收入</b><input id="incomeText" placeholder="例如：工资8500元；补录：260928 工资8500元"></div><div class="entry-line"><b class="expense-label">支出</b><input id="expenseText" placeholder="例如：买菜46元；补录：260928 买菜46元"></div></div>
@@ -57,7 +60,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
   </div>
   <div class="tip"><b>☀ 今日生活小常识</b><div id="dailyTip"></div></div>
   <div class="bless">With my warmest wishes, today and every day, to all my family and friends.</div>
-  <div class="version">我的财务报表 v1.6 · 2026.09.29</div>
+  <div class="version">流水帐随手记 v1.7 · 2026.09.29</div>
  </div>
 </section>
 
@@ -90,7 +93,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
  <div class="card">
   <div class="topbar"><button class="back" data-back>‹ 返回</button><h2>财务分析</h2></div>
   <div id="analysisContent"></div>
-  <div class="actions"><button class="mainbtn primary" id="downloadAnalysisBtn">下载</button><button class="mainbtn danger" id="resetBtn">重置</button></div>
+  <div class="actions"><button class="mainbtn primary" id="readAnalysisBtn">朗读</button><button class="mainbtn danger" id="resetBtn">重置</button></div>
  </div>
 </section>
 </div>
@@ -113,6 +116,12 @@ const rules=[
 ];
 const quotes=['认真生活，也认真记录生活。','把日子过成喜欢的样子，从珍惜每一份拥有开始。','生活的丰盛，不只在数字里，也在每一次用心安排中。','愿今天的每一笔记录，都成为明天从容生活的一点底气。','平常心看收支，用心过好每一天。','把钱花在值得的地方，把时间留给重要的人。'];
 const tips=['按实际需要采购蔬果，可以减少食物浪费，也让家庭支出更清晰。','固定缴费与日常消费分开记录，更容易看清真正可以调整的支出。','理财资金和生活消费分开统计，可以避免把资产转换误认为普通花销。','小额支出如果持续记录，一个月后往往比凭感觉估算更准确。','家庭预算不必追求每笔都省，重点是让必要支出、生活品质和长期储备保持平衡。','定期回顾重复性支出，比只关注偶尔的一笔大额消费更有参考价值。'];
+function getLunarText(d=new Date()){
+ try{
+  const f=new Intl.DateTimeFormat('zh-CN-u-ca-chinese',{month:'long',day:'numeric'});
+  return '农历'+f.format(d).replace(/\s/g,'');
+ }catch(e){return ''}
+}
 function localDate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
 function money(n){return '¥'+Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2600)}
@@ -181,14 +190,35 @@ function getRange(kind){
  else return null;
  return [localDate(s),localDate(e)];
 }
+function getAllTimeRange(){
+ const a=loadEntries();
+ if(!a.length){const d=localDate();return [d,d]}
+ const ds=a.map(e=>e.date).filter(Boolean).sort();
+ return [ds[0],ds[ds.length-1]];
+}
+function setAllTimeRange(){const r=getAllTimeRange();startDate.value=r[0];endDate.value=r[1]}
 function setRange(kind){const r=getRange(kind);if(r){startDate.value=r[0];endDate.value=r[1]}}
 let selectedId=null;
 function renderQuery(){
  const start=startDate.value,end=endDate.value;if(!start||!end||start>end){toast('请选择正确的日期区间');return}
- const list=filterEntries(loadEntries(),start,end).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)),sum=summarizeEntries(list);
+ const base=filterEntries(loadEntries(),start,end);
+ const dateQ=(document.getElementById('fDate')?.value||'').trim();
+ const typeQ=document.getElementById('fType')?.value||'';
+ const textQ=(document.getElementById('fText')?.value||'').trim().toLowerCase();
+ const minRaw=document.getElementById('fMin')?.value||'',maxRaw=document.getElementById('fMax')?.value||'';
+ const minQ=minRaw===''?0:Number(minRaw),maxQ=maxRaw===''?Infinity:Number(maxRaw);
+ const list=base.filter(e=>{
+  const tn=e.type==='income'?'收入':e.type==='investment'?'投资':'支出',tc=tn+' '+(e.category||'');
+  return (!dateQ||e.date.includes(dateQ))&&(!typeQ||tc.includes(typeQ))&&(!textQ||((e.name||'')+' '+(e.purpose||'')).toLowerCase().includes(textQ))&&Number(e.amount)>=minQ&&Number(e.amount)<=maxQ;
+ }).sort((x,y)=>(y.date+(y.time||'')).localeCompare(x.date+(x.time||'')));
+ const sum=summarizeEntries(list);
  const rows=list.map(e=>`<tr class="rowpick ${e.id===selectedId?'selected':''}" data-id="${e.id}"><td>${e.date.slice(5)}<br><small>${e.time||''}</small></td><td>${e.type==='income'?'收入':e.type==='investment'?'投资':'支出'}<br><small>${e.category}</small></td><td>${esc(e.name)}${e.purpose?`<br><small>${esc(e.purpose)}</small>`:''}</td><td>${money(e.amount)}</td></tr>`).join('');
- queryResults.innerHTML=`<div class="summary"><div class="stat"><small>总收入</small><strong>${money(sum.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(sum.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(sum.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(sum.balance)}</strong></div></div><div class="section"><h3>收支明细</h3><div class="tablewrap compact-table"><table><thead><tr><th>日期</th><th>类别</th><th>名称/用途</th><th>金额</th></tr></thead><tbody>${rows||'<tr><td colspan="4">暂无记录</td></tr>'}</tbody></table></div></div>`;
+ queryResults.innerHTML=`<div class="summary"><div class="stat"><small>总收入</small><strong>${money(sum.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(sum.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(sum.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(sum.balance)}</strong></div></div>
+ <div class="section"><h3>收支明细</h3><div class="tablewrap compact-table"><table><thead><tr><th>日期</th><th>类别</th><th>名称/用途</th><th>金额</th></tr>
+ <tr class="filter-row"><th><input id="fDate" value="${esc(dateQ)}" placeholder="日期"></th><th><select id="fType"><option value="">全部</option><option ${typeQ==='收入'?'selected':''}>收入</option><option ${typeQ==='支出'?'selected':''}>支出</option><option ${typeQ==='投资'?'selected':''}>投资</option>${categories.map(c=>`<option value="${c}" ${typeQ===c?'selected':''}>${c}</option>`).join('')}</select></th><th><input id="fText" value="${esc(textQ)}" placeholder="关键词"></th><th><div class="amount-filter"><input id="fMin" type="number" value="${minRaw}" placeholder="低"><input id="fMax" type="number" value="${maxRaw}" placeholder="高"></div></th></tr></thead><tbody>${rows||'<tr><td colspan="4">暂无记录</td></tr>'}</tbody></table></div></div>`;
  document.querySelectorAll('.rowpick').forEach(r=>r.onclick=()=>{selectedId=r.dataset.id;renderQuery();openEditor()});
+ ['fDate','fType','fMin','fMax'].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=renderQuery});
+ const te=document.getElementById('fText');if(te)te.oninput=()=>{clearTimeout(window._fq);window._fq=setTimeout(renderQuery,300)};
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function openEditor(){
@@ -251,21 +281,32 @@ function renderAnalysis(kind='month'){
 function downloadBlob(filename,text,type='text/plain;charset=utf-8'){const blob=new Blob(["\ufeff"+text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function downloadQuery(){const start=startDate.value,end=endDate.value;if(!start||!end||start>end){toast('请先选择正确日期并查询');return}const list=filterEntries(loadEntries(),start,end);const lines=[['日期','时间','性质','类别','名称','金额','用途'],...list.map(e=>[e.date,e.time||'',e.type==='income'?'收入':e.type==='investment'?'投资':'支出',e.category,e.name,e.amount,e.purpose||''])];const csv=lines.map(row=>row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\r\n');downloadBlob(`收支明细_${start}_${end}.csv`,csv,'text/csv;charset=utf-8')}
 function downloadAnalysis(){downloadBlob(`财务分析_${localDate()}.txt`,'收支管理 - 财务分析\n\n'+analysisContent.innerText+'\n\n生成日期：'+localDate())}
+let analysisSpeaking=false;
+function toggleAnalysisSpeech(){
+ if(!('speechSynthesis' in window)){toast('当前浏览器不支持朗读');return}
+ if(analysisSpeaking||speechSynthesis.speaking){speechSynthesis.cancel();analysisSpeaking=false;readAnalysisBtn.textContent='朗读';return}
+ const text=analysisContent.innerText.trim();if(!text){toast('当前没有可朗读内容');return}
+ const u=new SpeechSynthesisUtterance(text);u.lang='zh-CN';u.rate=.9;
+ u.onstart=()=>{analysisSpeaking=true;readAnalysisBtn.textContent='朗读关'};
+ u.onend=u.onerror=()=>{analysisSpeaking=false;readAnalysisBtn.textContent='朗读'};
+ speechSynthesis.speak(u);
+}
+
 function resetAll(){if(!confirm('警告：重置将清空所有收入和支出记录，且无法恢复。\n\n确定要继续吗？'))return;if(!confirm('请再次确认：是否永久清空全部记录？'))return;localStorage.removeItem(KEY);selectedId=null;updateToday();renderAnalysis('all');toast('全部收支记录已清空')}
 function init(){
- const now=new Date(),week='日一二三四五六'[now.getDay()];todayLabel.textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日  星期${week}`;
+ const now=new Date(),week='日一二三四五六'[now.getDay()];todayLabel.textContent=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日  星期${week}  ${getLunarText(now)}`;
  const seed=(now.getFullYear()*400+now.getMonth()*32+now.getDate());quote.textContent='“'+quotes[seed%quotes.length]+'”';dailyTip.textContent=tips[(seed+2)%tips.length];
  const bgs=[['#dcebd7','#f8e9cf','#d8e8e6'],['#e8e3d4','#dce9df','#f5e2d8'],['#d9e8e6','#f3ead9','#e4dfec']][seed%3];document.body.style.background=`linear-gradient(135deg,${bgs[0]},${bgs[1]} 50%,${bgs[2]})`;
- editCategory.innerHTML=categories.map(c=>`<option>${c}</option>`).join('');setRange('month');updateToday();
+ editCategory.innerHTML=categories.map(c=>`<option>${c}</option>`).join('');setAllTimeRange();updateToday();
 }
 addBtn.onclick=addEntry;
-queryBtn.onclick=()=>{showView('query');renderQuery()};
+queryBtn.onclick=()=>{setAllTimeRange();showView('query');renderQuery()};
 doQuery.onclick=renderQuery;
 topAnalysisBtn.onclick=()=>{showView('analysis');renderAnalysis('all')};
 downloadQueryBtn.onclick=downloadQuery;
 saveEdit.onclick=saveEditRecord;
 deleteEdit.onclick=deleteEditRecord;
-downloadAnalysisBtn.onclick=downloadAnalysis;
+readAnalysisBtn.onclick=toggleAnalysisSpeech;
 resetBtn.onclick=resetAll;
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showView('home'));
 init();
