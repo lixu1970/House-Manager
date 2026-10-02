@@ -29,7 +29,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:rgba(31,45,35,.92);color:white;padding:11px 16px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .editor{display:none;margin-top:14px}.editor.show{display:block}.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editgrid .wide{grid-column:1/-1}
 
-.filter-row th{padding:5px 3px;background:rgba(245,249,244,.96)}
+.pager{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0 4px;flex-wrap:wrap}.pager button{border:0;border-radius:12px;padding:8px 13px;background:#2f6fa8;color:#fff;font-size:14px}.pager button:disabled{opacity:.38}.pager-info{font-size:14px;min-width:120px;text-align:center}.filter-row th{padding:5px 3px;background:rgba(245,249,244,.96)}
 .filter-row input,.filter-row select{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:6px 3px;font-size:12px;background:#fff}
 .amount-filter{display:grid;grid-template-columns:1fr 1fr;gap:2px}
 .pie-wrap{background:rgba(255,255,255,.72);border-radius:20px;padding:15px;margin:8px 0 14px;text-align:center}
@@ -60,7 +60,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
   </div>
   <div class="tip"><b>☀ 今日生活小常识</b><div id="dailyTip"></div></div>
   <div class="bless">With my warmest wishes, today and every day, to all my family and friends.</div>
-  <div class="version">流水帐随手记 v1.9 · 2026.09.29</div>
+  <div class="version">流水帐随手记 v2.0 · 2026.09.29</div>
  </div>
 </section>
 
@@ -186,7 +186,7 @@ function updateToday(){const s=summarizeEntries(filterEntries(loadEntries(),loca
 function resetQueryState(){
  dateQueryOpen=false;
  const p=document.getElementById('dateQueryPanel');if(p)p.style.display='none';
- setAllTimeRange();selectedId=null;currentVisibleEntries=[];
+ setAllTimeRange();selectedId=null;currentVisibleEntries=[];queryPage=1;
  const ed=document.getElementById('editor');if(ed)ed.classList.remove('show');
 }
 
@@ -211,6 +211,7 @@ function setAllTimeRange(){const r=getAllTimeRange();startDate.value=r[0];endDat
 function setRange(kind){const r=getRange(kind);if(r){startDate.value=r[0];endDate.value=r[1]}}
 let selectedId=null;
 let currentVisibleEntries=[];
+let queryPage=1;const QUERY_PAGE_SIZE=10;
 function renderQuery(){
  let start=startDate.value,end=endDate.value;
  if(!start){const r=getAllTimeRange();start=r[0];end=r[1]} else if(!end)end=start;
@@ -227,13 +228,16 @@ function renderQuery(){
  }).sort((x,y)=>(y.date+(y.time||'')).localeCompare(x.date+(x.time||'')));
  currentVisibleEntries=list.slice();
  const sum=summarizeEntries(list);
- const rows=list.map(e=>`<tr class="rowpick ${e.id===selectedId?'selected':''}" data-id="${e.id}"><td>${e.date.slice(5)}<br><small>${e.time||''}</small></td><td>${e.type==='income'?'收入':e.type==='investment'?'投资':'支出'}<br><small>${e.category}</small></td><td>${esc(e.name)}${e.purpose?`<br><small>${esc(e.purpose)}</small>`:''}</td><td>${money(e.amount)}</td></tr>`).join('');
+ const totalPages=Math.max(1,Math.ceil(list.length/QUERY_PAGE_SIZE));queryPage=Math.min(Math.max(1,queryPage),totalPages);
+ const pageList=list.slice((queryPage-1)*QUERY_PAGE_SIZE,queryPage*QUERY_PAGE_SIZE);
+ const rows=pageList.map(e=>`<tr class="rowpick ${e.id===selectedId?'selected':''}" data-id="${e.id}"><td>${e.date.slice(5)}<br><small>${e.time||''}</small></td><td>${e.type==='income'?'收入':e.type==='investment'?'投资':'支出'}<br><small>${e.category}</small></td><td>${esc(e.name)}${e.purpose?`<br><small>${esc(e.purpose)}</small>`:''}</td><td>${money(e.amount)}</td></tr>`).join('');
  queryResults.innerHTML=`<div class="summary"><div class="stat"><small>总收入</small><strong>${money(sum.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(sum.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(sum.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(sum.balance)}</strong></div></div>
  <div class="section"><h3>收支明细</h3><div class="tablewrap compact-table"><table><thead><tr><th>日期</th><th>类别</th><th>名称/用途</th><th>金额</th></tr>
- <tr class="filter-row"><th><input id="fDate" value="${esc(dateQ)}" placeholder="日期"></th><th><select id="fType"><option value="">全部</option><option ${typeQ==='收入'?'selected':''}>收入</option><option ${typeQ==='支出'?'selected':''}>支出</option><option ${typeQ==='投资'?'selected':''}>投资</option>${categories.map(c=>`<option value="${c}" ${typeQ===c?'selected':''}>${c}</option>`).join('')}</select></th><th><input id="fText" value="${esc(textQ)}" placeholder="关键词"></th><th><div class="amount-filter"><input id="fMin" type="number" value="${minRaw}" placeholder="低"><input id="fMax" type="number" value="${maxRaw}" placeholder="高"></div></th></tr></thead><tbody>${rows||'<tr><td colspan="4">暂无记录</td></tr>'}</tbody></table></div></div>`;
+ <tr class="filter-row"><th><input id="fDate" value="${esc(dateQ)}" placeholder="日期"></th><th><select id="fType"><option value="">全部</option><option ${typeQ==='收入'?'selected':''}>收入</option><option ${typeQ==='支出'?'selected':''}>支出</option><option ${typeQ==='投资'?'selected':''}>投资</option>${categories.map(c=>`<option value="${c}" ${typeQ===c?'selected':''}>${c}</option>`).join('')}</select></th><th><input id="fText" value="${esc(textQ)}" placeholder="关键词"></th><th><div class="amount-filter"><input id="fMin" type="number" value="${minRaw}" placeholder="低"><input id="fMax" type="number" value="${maxRaw}" placeholder="高"></div></th></tr></thead><tbody>${rows||'<tr><td colspan="4">暂无记录</td></tr>'}</tbody></table></div><div class="pager"><button id="prevPage" ${queryPage<=1?'disabled':''}>上一页</button><span class="pager-info">第 ${queryPage} / ${totalPages} 页 · 共 ${list.length} 条</span><button id="nextPage" ${queryPage>=totalPages?'disabled':''}>下一页</button></div></div>`;
+ const prev=document.getElementById('prevPage'),next=document.getElementById('nextPage');if(prev)prev.onclick=()=>{if(queryPage>1){queryPage--;renderQuery()}};if(next)next.onclick=()=>{if(queryPage<totalPages){queryPage++;renderQuery()}};
  document.querySelectorAll('.rowpick').forEach(r=>r.onclick=()=>{selectedId=r.dataset.id;renderQuery();openEditor()});
- ['fDate','fType','fMin','fMax'].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=renderQuery});
- const te=document.getElementById('fText');if(te)te.oninput=()=>{clearTimeout(window._fq);window._fq=setTimeout(renderQuery,300)};
+ ['fDate','fType','fMin','fMax'].forEach(id=>{const el=document.getElementById(id);if(el)el.onchange=()=>{queryPage=1;renderQuery()}});
+ const te=document.getElementById('fText');if(te)te.oninput=()=>{clearTimeout(window._fq);window._fq=setTimeout(()=>{queryPage=1;renderQuery()},300)};
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function openEditor(){
@@ -323,7 +327,7 @@ function handleDateQuery(){
  }
  if(!startDate.value){toast('请选择查询开始日期');return}
  if(!endDate.value)endDate.value=startDate.value;
- renderQuery();
+ queryPage=1;renderQuery();
 }
 
 function init(){
