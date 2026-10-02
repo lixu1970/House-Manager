@@ -25,7 +25,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}.summary .stat{background:rgba(255,255,255,.78)}
 .tablewrap{overflow:auto;border-radius:16px;background:rgba(255,255,255,.72)}table{width:100%;border-collapse:collapse;font-size:13px}.compact-table table{table-layout:fixed;min-width:0}.compact-table th:nth-child(1){width:22%}.compact-table th:nth-child(2){width:22%}.compact-table th:nth-child(3){width:36%}.compact-table th:nth-child(4){width:20%}.compact-table td{word-break:break-word;padding:8px 4px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left}th{background:rgba(230,239,229,.8);position:sticky;top:0}.rowpick{cursor:pointer}.rowpick.selected{background:#e2efdf}
 .section{margin-top:14px}.section h3{font-size:16px;margin:0 0 9px}.analysis-box{background:rgba(255,255,255,.7);border-radius:18px;padding:14px;margin:10px 0;line-height:1.65;font-size:14px}.analysis-box ul{margin:7px 0 0;padding-left:20px}
-.actions{display:flex;gap:10px;margin-top:14px}.actions button{flex:1}.mainbtn.danger{background:#c83f3f;color:#fff}
+.actions{display:flex;gap:10px;margin-top:14px}.actions button{flex:1}.query-bottom-actions{gap:6px}.query-bottom-actions .mainbtn{padding-left:4px;padding-right:4px;font-size:clamp(14px,3.8vw,18px)}.mainbtn.danger{background:#c83f3f;color:#fff}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:rgba(31,45,35,.92);color:white;padding:11px 16px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .editor{display:none;margin-top:14px}.editor.show{display:block}.editgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.editgrid .wide{grid-column:1/-1}
 
@@ -60,7 +60,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
   </div>
   <div class="tip"><b>☀ 今日生活小常识</b><div id="dailyTip"></div></div>
   <div class="bless">With my warmest wishes, today and every day, to all my family and friends.</div>
-  <div class="version">流水帐随手记 v1.8 · 2026.09.29</div>
+  <div class="version">流水帐随手记 v1.9 · 2026.09.29</div>
  </div>
 </section>
 
@@ -71,7 +71,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
   <div class="date-line"><label>查询开始日期</label><input type="date" id="startDate"></div>
   <div class="date-line"><label>查询结束日期</label><input type="date" id="endDate"></div>
  </div>
-  <div class="actions"><button class="mainbtn primary" id="doQuery">选择日期查询</button><button class="mainbtn" id="topAnalysisBtn">分析</button></div>
+  
   <div id="queryResults"></div>
   <div class="editor" id="editor">
    <div class="section"><h3>修改选中的记录</h3></div>
@@ -85,7 +85,11 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
    </div>
    <div class="actions"><button class="mainbtn primary" id="saveEdit">保存修改</button><button class="mainbtn danger" id="deleteEdit">删除</button></div>
   </div>
-  <div class="actions"><button class="mainbtn primary" id="downloadQueryBtn">下载收支明细</button></div>
+  <div class="actions query-bottom-actions">
+<button class="mainbtn primary" id="doQuery">选择日期查询</button>
+<button class="mainbtn" id="topAnalysisBtn">分析</button>
+<button class="mainbtn primary" id="downloadQueryBtn">下载</button>
+</div>
  </div>
 </section>
 
@@ -179,6 +183,13 @@ function summarizeEntries(entries){
  return {income,expense,investment,balance:income-expense-investment,by};
 }
 function updateToday(){const s=summarizeEntries(filterEntries(loadEntries(),localDate(),localDate()));todayIncome.textContent=money(s.income);todayExpense.textContent=money(s.expense);todayBalance.textContent=money(s.income-s.expense-s.investment)}
+function resetQueryState(){
+ dateQueryOpen=false;
+ const p=document.getElementById('dateQueryPanel');if(p)p.style.display='none';
+ setAllTimeRange();selectedId=null;currentVisibleEntries=[];
+ const ed=document.getElementById('editor');if(ed)ed.classList.remove('show');
+}
+
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
 function getRange(kind){
  const now=new Date(), y=now.getFullYear(),m=now.getMonth();let s,e;
@@ -199,6 +210,7 @@ function getAllTimeRange(){
 function setAllTimeRange(){const r=getAllTimeRange();startDate.value=r[0];endDate.value=r[1]}
 function setRange(kind){const r=getRange(kind);if(r){startDate.value=r[0];endDate.value=r[1]}}
 let selectedId=null;
+let currentVisibleEntries=[];
 function renderQuery(){
  let start=startDate.value,end=endDate.value;
  if(!start){const r=getAllTimeRange();start=r[0];end=r[1]} else if(!end)end=start;
@@ -213,6 +225,7 @@ function renderQuery(){
   const tn=e.type==='income'?'收入':e.type==='investment'?'投资':'支出',tc=tn+' '+(e.category||'');
   return (!dateQ||e.date.includes(dateQ))&&(!typeQ||tc.includes(typeQ))&&(!textQ||((e.name||'')+' '+(e.purpose||'')).toLowerCase().includes(textQ))&&Number(e.amount)>=minQ&&Number(e.amount)<=maxQ;
  }).sort((x,y)=>(y.date+(y.time||'')).localeCompare(x.date+(x.time||'')));
+ currentVisibleEntries=list.slice();
  const sum=summarizeEntries(list);
  const rows=list.map(e=>`<tr class="rowpick ${e.id===selectedId?'selected':''}" data-id="${e.id}"><td>${e.date.slice(5)}<br><small>${e.time||''}</small></td><td>${e.type==='income'?'收入':e.type==='investment'?'投资':'支出'}<br><small>${e.category}</small></td><td>${esc(e.name)}${e.purpose?`<br><small>${esc(e.purpose)}</small>`:''}</td><td>${money(e.amount)}</td></tr>`).join('');
  queryResults.innerHTML=`<div class="summary"><div class="stat"><small>总收入</small><strong>${money(sum.income)}</strong></div><div class="stat"><small>生活支出</small><strong>${money(sum.expense)}</strong></div><div class="stat"><small>理财投资</small><strong>${money(sum.investment)}</strong></div><div class="stat"><small>现金结余</small><strong>${money(sum.balance)}</strong></div></div>
@@ -281,7 +294,13 @@ function renderAnalysis(kind='month'){
  <div class="analysis-box"><b>三、家庭财务建议</b><ul>${a.advice.map(x=>`<li>${x}</li>`).join('')}</ul><div style="margin-top:8px;color:#68756b;font-size:12px">以上为一般性财务管理参考，不构成具体投资产品建议。</div></div>`;
 }
 function downloadBlob(filename,text,type='text/plain;charset=utf-8'){const blob=new Blob(["\ufeff"+text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-function downloadQuery(){const start=startDate.value,end=endDate.value;if(!start||!end||start>end){toast('请先选择正确日期并查询');return}const list=filterEntries(loadEntries(),start,end);const lines=[['日期','时间','性质','类别','名称','金额','用途'],...list.map(e=>[e.date,e.time||'',e.type==='income'?'收入':e.type==='investment'?'投资':'支出',e.category,e.name,e.amount,e.purpose||''])];const csv=lines.map(row=>row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\r\n');downloadBlob(`收支明细_${start}_${end}.csv`,csv,'text/csv;charset=utf-8')}
+function downloadQuery(){
+ const list=currentVisibleEntries.slice();
+ if(!list.length){toast('当前没有可下载的明细');return}
+ const lines=[['日期','时间','性质','类别','名称','金额','用途'],...list.map(e=>[e.date,e.time||'',e.type==='income'?'收入':e.type==='investment'?'投资':'支出',e.category,e.name,e.amount,e.purpose||''])];
+ const csv=lines.map(row=>row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ downloadBlob(`流水明细_${localDate()}.csv`,csv,'text/csv;charset=utf-8');
+}
 function downloadAnalysis(){downloadBlob(`财务分析_${localDate()}.txt`,'收支管理 - 财务分析\n\n'+analysisContent.innerText+'\n\n生成日期：'+localDate())}
 let analysisSpeaking=false;
 function toggleAnalysisSpeech(){
@@ -323,7 +342,7 @@ incomeText.addEventListener('input',syncEntryChoice);
 expenseText.addEventListener('input',syncEntryChoice);
 
 addBtn.onclick=addEntry;
-queryBtn.onclick=()=>{dateQueryOpen=false;dateQueryPanel.style.display='none';setAllTimeRange();showView('query');renderQuery()};
+queryBtn.onclick=()=>{resetQueryState();showView('query');renderQuery()};
 doQuery.onclick=handleDateQuery;
 topAnalysisBtn.onclick=()=>{showView('analysis');renderAnalysis('all')};
 downloadQueryBtn.onclick=downloadQuery;
@@ -331,7 +350,7 @@ saveEdit.onclick=saveEditRecord;
 deleteEdit.onclick=deleteEditRecord;
 readAnalysisBtn.onclick=toggleAnalysisSpeech;
 resetBtn.onclick=resetAll;
-document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>showView('home'));
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{resetQueryState();showView('home')});
 init();
 </script>
 </body>
