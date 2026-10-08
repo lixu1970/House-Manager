@@ -60,7 +60,7 @@ textarea{width:50%;min-width:230px;max-width:360px;min-height:78px;border:1px so
   </div>
   <div class="tip"><b>☀ 今日生活小常识</b><div id="dailyTip"></div></div>
   <div class="bless">With my warmest wishes, today and every day, to all my family and friends.</div>
-  <div class="version">流水帐随手记 v2.0 · 2026.09.29</div>
+  <div class="version">流水帐随手记 v2.1 · 2026.09.29</div>
  </div>
 </section>
 
@@ -130,7 +130,7 @@ function localDate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1
 function money(n){return '¥'+Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2600)}
 function loadEntries(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return []}}
-function saveEntries(entries){localStorage.setItem(KEY,JSON.stringify(entries))}
+function saveEntries(entries){try{localStorage.setItem(KEY,JSON.stringify(entries));return true}catch(e){alert('保存失败：浏览器存储空间不足或禁止本地存储。请勿关闭页面，并检查浏览器设置。');return false}}
 function classify(text,type){
  if(type==='income') return /工资|薪资|奖金/.test(text)?'工资收入':'其他收入';
  if(type==='investment') return '理财投资';
@@ -160,7 +160,7 @@ function parseEntry(text,forcedType=null){
  const raw=(text||'').trim(); if(!raw)return {error:'请输入一笔收支内容'};
  const dated=extractEntryDate(raw), parseText=dated.cleaned;
  const matches=[...parseText.matchAll(/(?:¥|￥)?\s*(\d+(?:\.\d{1,2})?)\s*(?:元|块|块钱|人民币)?/g)];
- const candidates=matches.filter(m=>{const n=Number(m[1]);return n>0 && !(n>=1900&&n<=2100)});
+ const candidates=matches.filter(m=>Number(m[1])>0); // 日期已在前一步单独提取，不排除1900—2100元金额
  if(!candidates.length)return {error:'没有识别到有效金额，请例如输入“买苹果46元”'};
  const preferred=candidates.filter(m=>/元|块|块钱|人民币/.test(m[0]));
  const pick=(preferred.length?preferred:candidates).at(-1), amount=Number(pick[1]);
@@ -174,7 +174,7 @@ function parseEntry(text,forcedType=null){
  return {id:Date.now()+Math.random().toString(16).slice(2),date:dated.date,time:new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}),type,category,name:name.slice(0,60),amount,purpose,raw,createdAt:new Date().toISOString()};
 }
 function addEntry(){
- const income=incomeText.value.trim(),expense=expenseText.value.trim(); if(!income&&!expense){toast('请在“收入”或“支出”框输入一笔记录');return} if(income&&expense){toast('单笔录入时请只填写收入或支出其中一项');return} const r=parseEntry(income||expense,income?'income':'expense'); if(r.error){toast(r.error);return} const a=loadEntries();a.push(r);saveEntries(a);incomeText.value='';expenseText.value='';incomeText.disabled=false;expenseText.disabled=false;updateToday();toast(`✓ 已计入账单：${r.category}｜${r.name}｜${r.amount.toFixed(2)}元`);
+ const income=incomeText.value.trim(),expense=expenseText.value.trim(); if(!income&&!expense){toast('请在“收入”或“支出”框输入一笔记录');return} if(income&&expense){toast('单笔录入时请只填写收入或支出其中一项');return} const r=parseEntry(income||expense,income?'income':'expense'); if(r.error){toast(r.error);return} const a=loadEntries();a.push(r);if(!saveEntries(a))return;incomeText.value='';expenseText.value='';incomeText.disabled=false;expenseText.disabled=false;updateToday();toast(`✓ 已计入账单：${r.category}｜${r.name}｜${r.amount.toFixed(2)}元`);
 }
 function filterEntries(entries,start,end){return entries.filter(e=>e.date>=start&&e.date<=end)}
 function summarizeEntries(entries){
@@ -248,7 +248,7 @@ function openEditor(){
 function saveEditRecord(){
  const amount=Number(editAmount.value);if(!editDate.value||!editName.value.trim()||!(amount>0)){toast('日期、名称和金额不能为空');return}
  const a=loadEntries(),i=a.findIndex(x=>x.id===selectedId);if(i<0)return;
- a[i]={...a[i],date:editDate.value,type:editType.value,category:editCategory.value,amount,name:editName.value.trim(),purpose:editPurpose.value.trim()};saveEntries(a);editor.classList.remove('show');updateToday();renderQuery();toast('修改已保存');
+ a[i]={...a[i],date:editDate.value,type:editType.value,category:editCategory.value,amount,name:editName.value.trim(),purpose:editPurpose.value.trim()};if(!saveEntries(a))return;editor.classList.remove('show');updateToday();renderQuery();toast('修改已保存');
 }
 
 function deleteEditRecord(){
@@ -256,7 +256,7 @@ function deleteEditRecord(){
  const all=loadEntries(),item=all.find(x=>x.id===selectedId);
  if(!item){toast('未找到这条记录');return}
  if(!confirm(`确定删除这笔记录吗？\n${item.name} · ${money(item.amount)}`))return;
- saveEntries(all.filter(x=>x.id!==selectedId));selectedId=null;editor.classList.remove('show');updateToday();renderQuery();toast('该笔记录已删除');
+ if(!saveEntries(all.filter(x=>x.id!==selectedId)))return;selectedId=null;editor.classList.remove('show');updateToday();renderQuery();toast('该笔记录已删除');
 }
 function buildAnalysis(entries,rangeLabel='所选期间'){
  const s=summarizeEntries(entries), spending=s.expense||1;
